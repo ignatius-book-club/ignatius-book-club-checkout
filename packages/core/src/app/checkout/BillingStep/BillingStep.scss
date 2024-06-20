@@ -1,0 +1,48 @@
+// ShippingAccordionTitle.scss
+
+.shipping-accordion-title {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  .title-text {
+    color: #02176f;
+    font-size: 2rem;
+    font-weight: bold;
+    grid-column: 1;
+  }
+
+  .content-wrapper {
+    grid-column: 1 / span 3;
+
+    .address-display {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .shipping-info {
+      border-top: 1px solid #ccc;
+      padding-top: 1rem;
+      color: #0056b3;
+    }
+  }
+
+  .edit-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 0.875rem;
+    color: #333;
+    text-decoration: underline;
+    pointer-events: auto;
+  }
+
+  @media (max-width: 768px) {
+    .edit-button {
+      grid-column: 1 / span 2;
+      max-width: 100%;
+    }
+  }
+}
