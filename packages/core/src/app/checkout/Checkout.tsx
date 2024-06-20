@@ -54,6 +54,7 @@ import CheckoutSupport from './CheckoutSupport';
 import mapToCheckoutProps from './mapToCheckoutProps';
 import navigateToOrderConfirmation from './navigateToOrderConfirmation';
 import { ShippingStep } from './ShippingStep/ShippingStep';
+import { BillingStep } from './BillingStep/BillingStep';
 
 const Billing = lazy(() =>
   retry(
@@ -360,6 +361,8 @@ class Checkout extends Component<
       extensionState,
     } = this.props;
 
+    console.log('steps::::', steps);
+
     const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
 
     if (isCartEmpty) {
@@ -420,7 +423,7 @@ class Checkout extends Component<
         return <ShippingStep address={this.state.shippingAddress!} />;
 
       case CheckoutStepType.Billing:
-        return this.renderBillingStep(step);
+        return <BillingStep address={this.state.billingAddress!} />;
 
       case CheckoutStepType.Payment:
         return this.renderPaymentStep(step);
