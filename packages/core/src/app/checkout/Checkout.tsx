@@ -1,5 +1,6 @@
 import {
   Address,
+  BillingAddress,
   Cart,
   CartChangedError,
   CheckoutParams,
@@ -55,6 +56,7 @@ import mapToCheckoutProps from './mapToCheckoutProps';
 import navigateToOrderConfirmation from './navigateToOrderConfirmation';
 import { ShippingStep } from './ShippingStep/ShippingStep';
 import { BillingStep } from './BillingStep/BillingStep';
+import { CustomerStep } from './CustomerStep/CustomerStep';
 
 const Billing = lazy(() =>
   retry(
@@ -121,7 +123,7 @@ export interface CheckoutState {
   buttonConfigs: PaymentMethod[];
 
   shippingAddress?: Address;
-  billingAddress?: Address;
+  billingAddress?: BillingAddress;
   customer: ICustomer;
   order: Order;
 }
@@ -267,6 +269,8 @@ class Checkout extends Component<
         hasMultiShippingEnabled &&
         isUsingMultiShipping(consignments, cart.lineItems);
 
+      console.log('Checkout.customer:::: ', data.getCustomer());
+
       this.setState({
         isBillingSameAsShipping: checkoutBillingSameAsShippingEnabled,
         isHidingStepNumbers: removeStepNumbersFlag,
@@ -361,8 +365,6 @@ class Checkout extends Component<
       extensionState,
     } = this.props;
 
-    console.log('steps::::', steps);
-
     const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
 
     if (isCartEmpty) {
@@ -417,7 +419,9 @@ class Checkout extends Component<
   private renderStep(step: CheckoutStepStatus): ReactNode {
     switch (step.type) {
       case CheckoutStepType.Customer:
-        return this.renderCustomerStep(step);
+        return (
+          <CustomerStep email={this.state.customer?.email || this.state.billingAddress?.email} />
+        );
 
       case CheckoutStepType.Shipping:
         return <ShippingStep address={this.state.shippingAddress!} />;
@@ -468,29 +472,6 @@ class Checkout extends Component<
           step={step}
           viewType={customerViewType}
         />
-      </CheckoutStep>
-    );
-  }
-
-  private renderBillingStep(step: CheckoutStepStatus): ReactNode {
-    const { billingAddress } = this.props;
-
-    return (
-      <CheckoutStep
-        {...step}
-        heading={<TranslatedString id="billing.billing_heading" />}
-        key={step.type}
-        onEdit={this.handleEditStep}
-        onExpanded={this.handleExpanded}
-        summary={billingAddress && <StaticBillingAddress address={billingAddress} />}
-      >
-        <LazyContainer loadingSkeleton={<AddressFormSkeleton />}>
-          <Billing
-            navigateNextStep={this.navigateToNextIncompleteStep}
-            onReady={this.handleReady}
-            onUnhandledError={this.handleUnhandledError}
-          />
-        </LazyContainer>
       </CheckoutStep>
     );
   }
