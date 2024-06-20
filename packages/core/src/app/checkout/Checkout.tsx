@@ -5,10 +5,10 @@ import {
   CheckoutParams,
   CheckoutSelectors,
   Consignment,
-  Customer as ICustomer,
   EmbeddedCheckoutMessenger,
   EmbeddedCheckoutMessengerOptions,
   FlashMessage,
+  Customer as ICustomer,
   Order,
   PaymentMethod,
   Promotion,
@@ -42,7 +42,7 @@ import { getSupportedMethodIds } from '../customer/getSupportedMethods';
 import { SubscribeSessionStorage } from '../customer/SubscribeSessionStorage';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
 import { PromotionBannerList } from '../promotion';
-import { hasSelectedShippingOptions, isUsingMultiShipping, StaticConsignment } from '../shipping';
+import { hasSelectedShippingOptions, isUsingMultiShipping } from '../shipping';
 import { ShippingOptionExpiredError } from '../shipping/shippingOption';
 import { LazyContainer, LoadingNotification, LoadingOverlay } from '../ui/loading';
 import { MobileView } from '../ui/responsive';
@@ -53,7 +53,6 @@ import CheckoutStepType from './CheckoutStepType';
 import CheckoutSupport from './CheckoutSupport';
 import mapToCheckoutProps from './mapToCheckoutProps';
 import navigateToOrderConfirmation from './navigateToOrderConfirmation';
-import { AddressDisplay } from './AddressDisplay/AddressDisplay';
 import { ShippingStep } from './ShippingStep/ShippingStep';
 
 const Billing = lazy(() =>
@@ -92,16 +91,6 @@ const Payment = lazy(() =>
       import(
         /* webpackChunkName: "payment" */
         '../payment/Payment'
-      ),
-  ),
-);
-
-const Shipping = lazy(() =>
-  retry(
-    () =>
-      import(
-        /* webpackChunkName: "shipping" */
-        '../shipping/Shipping'
       ),
   ),
 );
@@ -480,51 +469,6 @@ class Checkout extends Component<
     );
   }
 
-  private renderShippingStep(step: CheckoutStepStatus): ReactNode {
-    const { hasCartChanged, cart, consignments = [] } = this.props;
-
-    const { isBillingSameAsShipping, isMultiShippingMode } = this.state;
-
-    if (!cart) {
-      return;
-    }
-
-    return (
-      <CheckoutStep
-        {...step}
-        heading={<TranslatedString id="shipping.shipping_heading" />}
-        key={step.type}
-        onEdit={this.handleEditStep}
-        onExpanded={this.handleExpanded}
-        summary={consignments.map((consignment) => (
-          <div className="staticConsignmentContainer" key={consignment.id}>
-            <StaticConsignment
-              cart={cart}
-              compactView={consignments.length < 2}
-              consignment={consignment}
-            />
-          </div>
-        ))}
-      >
-        <LazyContainer loadingSkeleton={<AddressFormSkeleton />}>
-          <Shipping
-            cartHasChanged={hasCartChanged}
-            isBillingSameAsShipping={isBillingSameAsShipping}
-            isMultiShippingMode={isMultiShippingMode}
-            navigateNextStep={this.handleShippingNextStep}
-            onCreateAccount={this.handleShippingCreateAccount}
-            onReady={this.handleReady}
-            onSignIn={this.handleShippingSignIn}
-            onToggleMultiShipping={this.handleToggleMultiShipping}
-            onUnhandledError={this.handleUnhandledError}
-            step={step}
-          />
-          <AddressDisplay address={this.state.shippingAddress!} />
-        </LazyContainer>
-      </CheckoutStep>
-    );
-  }
-
   private renderBillingStep(step: CheckoutStepStatus): ReactNode {
     const { billingAddress } = this.props;
 
@@ -626,12 +570,6 @@ class Checkout extends Component<
       clearError(error);
     }
   }
-
-  private handleToggleMultiShipping: () => void = () => {
-    const { isMultiShippingMode } = this.state;
-
-    this.setState({ isMultiShippingMode: !isMultiShippingMode });
-  };
 
   private navigateToNextIncompleteStep: (options?: { isDefault?: boolean }) => void = (options) => {
     const { steps, analyticsTracker } = this.props;
@@ -777,26 +715,6 @@ class Checkout extends Component<
     }
 
     this.navigateToStep(CheckoutStepType.Customer);
-  };
-
-  private handleShippingNextStep: (isBillingSameAsShipping: boolean) => void = (
-    isBillingSameAsShipping,
-  ) => {
-    this.setState({ isBillingSameAsShipping });
-
-    if (isBillingSameAsShipping) {
-      this.navigateToNextIncompleteStep();
-    } else {
-      this.navigateToStep(CheckoutStepType.Billing);
-    }
-  };
-
-  private handleShippingSignIn: () => void = () => {
-    this.setCustomerViewType(CustomerViewType.Login);
-  };
-
-  private handleShippingCreateAccount: () => void = () => {
-    this.setCustomerViewType(CustomerViewType.CreateAccount);
   };
 
   private setCustomerViewType: (viewType: CustomerViewType) => void = (customerViewType) => {
