@@ -8064,7 +8064,10 @@ html {
 .\[\&\:not\(\:first-child\)\]\:-ml-1:not(:first-child) {
   margin-left: -0.25rem;
 }
-.\[\&\:not\(\:first-of-type\)\:not\(\:last-of-type\)\]\:rounded-none:not(:first-of-type, :last-of-type) {
+.\[\&\:not\(\:first-of-type\)\:not\(\:last-of-type\)\]\:rounded-none:not(
+    :first-of-type,
+    :last-of-type
+  ) {
   border-radius: 0;
 }
 .\[\&\:not\(\:first-of-type\)\]\:ml-\[calc\(theme\(borderWidth\.2\)\*-1\)\]:not(:first-of-type) {
