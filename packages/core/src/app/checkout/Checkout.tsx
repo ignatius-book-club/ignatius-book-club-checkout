@@ -9,8 +9,8 @@ import {
   EmbeddedCheckoutMessenger,
   EmbeddedCheckoutMessengerOptions,
   FlashMessage,
-  Customer as ICustomer,
   Checkout as ICheckout,
+  Customer as ICustomer,
   Order,
   PaymentMethod,
   Promotion,
@@ -38,9 +38,10 @@ import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
 import { PromotionBannerList } from '../promotion';
 import { hasSelectedShippingOptions, isUsingMultiShipping } from '../shipping';
 import { ShippingOptionExpiredError } from '../shipping/shippingOption';
-import { LazyContainer, LoadingNotification, LoadingOverlay } from '../ui/loading';
+import { LazyContainer } from '../ui/loading';
 
 import { BillingStep } from './BillingStep/BillingStep';
+import { CheckoutPageFallback } from './CheckoutPageFallback/CheckoutPageFallback';
 import CheckoutStep from './CheckoutStep';
 import CheckoutStepStatus from './CheckoutStepStatus';
 import CheckoutStepType from './CheckoutStepType';
@@ -50,6 +51,7 @@ import mapToCheckoutProps from './mapToCheckoutProps';
 import navigateToOrderConfirmation from './navigateToOrderConfirmation';
 import { ShippingStep } from './ShippingStep/ShippingStep';
 import { ibcUrl } from './utils/checkout-utils';
+import { IBCHeader } from './IBCHeader/IBCHeader';
 
 const CartSummary = lazy(() =>
   retry(
@@ -100,6 +102,7 @@ export interface CheckoutState {
   customer: ICustomer;
   order: Order;
   checkout: ICheckout;
+  isLoading: boolean;
 }
 
 export interface WithCheckoutProps {
@@ -145,6 +148,7 @@ class Checkout extends Component<
     customer: {} as ICustomer,
     order: {} as Order,
     checkout: {} as any,
+    isLoading: true,
   };
 
   private embeddedMessenger?: EmbeddedCheckoutMessenger;
@@ -252,6 +256,7 @@ class Checkout extends Component<
         customer: data.getCustomer()!,
         order: data.getOrder()!,
         checkout: data.getCheckout()!,
+        isLoading: false,
       });
 
       if (isMultiShippingMode) {
@@ -272,6 +277,10 @@ class Checkout extends Component<
     const { error, isHidingStepNumbers } = this.state;
     let errorModal = null;
 
+    if (this.state.isLoading) {
+      return <CheckoutPageFallback />;
+    }
+
     if (error) {
       if (isCustomError(error)) {
         errorModal = (
@@ -291,41 +300,9 @@ class Checkout extends Component<
         data-test="checkout-page-container"
         id="checkout-page-container"
       >
-        <div className="bg-ibc-orange ibc-container" style={{ height: '70px' }}>
-          <div className="ibc-container-fixed flex h-full items-center justify-between">
-            <a href={`${ibcUrl}/cart`} style={{ filter: 'brightness(0) invert(1)' }}>
-              <img
-                src="https://res.cloudinary.com/dsewycgig/image/upload/v1705889390/ibf_assets/ibf-brightblue_1701195858__78176.original_u75ege.png"
-                alt="Ignatius Book Fairs"
-                className="rounded-none"
-                width="180px"
-                height="76px"
-              />
-            </a>
-            <div className="hidden items-center gap-2 md:flex font-brother-1816">
-              <a
-                className="rounded-md bg-transparent px-4 py-2 uppercase text-white hover:opacity-70"
-                href={ibcUrl}
-              >
-                Book Fairs
-              </a>
-              <a
-                href={ibcUrl}
-                className="text-ibc-orange rounded-md bg-transparent bg-white px-4 py-2 uppercase"
-              >
-                Shop
-              </a>
-              <a
-                className="rounded-md bg-transparent px-4 py-2 uppercase text-white hover:opacity-70"
-                href="https://afvapnqh.donorsupport.co/-/XAKURTAP"
-              >
-                Donate
-              </a>
-            </div>
-          </div>
-        </div>
+        <IBCHeader />
 
-        <div className="bg-light-page-bg ibc-container relative z-40 py-8 lg:py-16">
+        <div className="bg-light-page-bg ibc-container relative z-40 py-8 lg:py-16 min-h-100vh">
           <div className="ibc-container-fixed">
             <h1 className="text-ibc-blue items flex justify-between text-3xl font-semibold capitalize mb-0">
               Checkout
@@ -355,16 +332,9 @@ class Checkout extends Component<
   }
 
   private renderContent(): ReactNode {
-    const {
-      isPending,
-      loginUrl,
-      promotions = [],
-      steps,
-      isShowingWalletButtonsOnTop,
-      extensionState,
-    } = this.props;
+    const { isPending, loginUrl, promotions = [], steps, isShowingWalletButtonsOnTop } = this.props;
 
-    const { activeStepType, defaultStepType, isCartEmpty, isRedirecting } = this.state;
+    const { activeStepType, defaultStepType, isCartEmpty } = this.state;
 
     if (isCartEmpty) {
       return <EmptyCartMessage loginUrl={loginUrl} waitInterval={3000} />;
@@ -375,41 +345,32 @@ class Checkout extends Component<
       : defaultStepType === CheckoutStepType.Payment;
 
     return (
-      <LoadingOverlay hideContentWhenLoading isLoading={isRedirecting}>
-        <div>
-          <LoadingNotification
-            isLoading={
-              (!isShowingWalletButtonsOnTop && isPending) ||
-              extensionState.isShowingLoadingIndicator
-            }
+      <div>
+        <PromotionBannerList promotions={promotions} />
+
+        {isShowingWalletButtonsOnTop && this.state.buttonConfigs?.length > 0 && (
+          <CheckoutButtonContainer
+            checkEmbeddedSupport={this.checkEmbeddedSupport}
+            isPaymentStepActive={isPaymentStepActive}
+            onUnhandledError={this.handleUnhandledError}
+            onWalletButtonClick={this.handleWalletButtonClick}
           />
+        )}
 
-          <PromotionBannerList promotions={promotions} />
-
-          {isShowingWalletButtonsOnTop && this.state.buttonConfigs?.length > 0 && (
-            <CheckoutButtonContainer
-              checkEmbeddedSupport={this.checkEmbeddedSupport}
-              isPaymentStepActive={isPaymentStepActive}
-              onUnhandledError={this.handleUnhandledError}
-              onWalletButtonClick={this.handleWalletButtonClick}
-            />
-          )}
-
-          <div className="w-full p-0">
-            {steps
-              .filter((step) => step.isRequired)
-              .map((step) =>
-                this.renderStep({
-                  ...step,
-                  isActive: activeStepType
-                    ? activeStepType === step.type
-                    : defaultStepType === step.type,
-                  isBusy: isPending,
-                }),
-              )}
-          </div>
+        <div className="w-full p-0">
+          {steps
+            .filter((step) => step.isRequired)
+            .map((step) =>
+              this.renderStep({
+                ...step,
+                isActive: activeStepType
+                  ? activeStepType === step.type
+                  : defaultStepType === step.type,
+                isBusy: isPending,
+              }),
+            )}
         </div>
-      </LoadingOverlay>
+      </div>
     );
   }
 

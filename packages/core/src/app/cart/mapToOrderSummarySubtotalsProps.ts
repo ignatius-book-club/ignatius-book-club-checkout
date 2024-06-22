@@ -15,9 +15,6 @@ export default function mapToOrderSummarySubtotalsProps({
   taxes,
   fees,
 }: Checkout): OrderSummarySubtotalsProps {
-  console.log('huh:::::: ', consignments);
-  console.log('hasSelectedShippingOptions:::::: ', hasSelectedShippingOptions(consignments));
-
   return {
     subtotalAmount: subtotal,
     discountAmount,

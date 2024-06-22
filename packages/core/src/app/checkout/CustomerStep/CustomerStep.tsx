@@ -10,7 +10,7 @@ export const CustomerStep = ({ email }: CustomerStepProps) => {
       <span className="text-ibc-blue col-span-1 text-2xl font-semibold m-0 capitalize">
         Customer
       </span>
-      <span className="col-span-2 text-ibc-blue text-base">{email}</span>
+      <span className="col-span-2 text-ibc-blue text-large">{email}</span>
     </div>
   );
 };
