@@ -16,30 +16,27 @@ import {
   Promotion,
   RequestOptions,
 } from '@bigcommerce/checkout-sdk';
-import classNames from 'classnames';
-import { find, findIndex } from 'lodash';
-import React, { Component, lazy, ReactNode } from 'react';
-
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
 import { ExtensionContextProps, withExtension } from '@bigcommerce/checkout/checkout-extension';
 import { ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
-import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
+import { TranslatedString, WithLanguageProps, withLanguage } from '@bigcommerce/checkout/locale';
 import { ChecklistSkeleton } from '@bigcommerce/checkout/ui';
-
+import classNames from 'classnames';
+import { find, findIndex } from 'lodash';
+import React, { Component, ReactNode, lazy } from 'react';
 import { withAnalytics } from '../analytics';
 import { EmptyCartMessage } from '../cart';
 import { withCheckout } from '../checkout';
 import { CustomError, ErrorModal, isCustomError } from '../common/error';
 import { retry } from '../common/utility';
 import { CheckoutButtonContainer, CustomerViewType } from '../customer';
-import { getSupportedMethodIds } from '../customer/getSupportedMethods';
 import { SubscribeSessionStorage } from '../customer/SubscribeSessionStorage';
+import { getSupportedMethodIds } from '../customer/getSupportedMethods';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
 import { PromotionBannerList } from '../promotion';
 import { hasSelectedShippingOptions, isUsingMultiShipping } from '../shipping';
 import { ShippingOptionExpiredError } from '../shipping/shippingOption';
 import { LazyContainer } from '../ui/loading';
-
 import { BillingStep } from './BillingStep/BillingStep';
 import { CheckoutPageFallback } from './CheckoutPageFallback/CheckoutPageFallback';
 import CheckoutStep from './CheckoutStep';
@@ -47,11 +44,11 @@ import CheckoutStepStatus from './CheckoutStepStatus';
 import CheckoutStepType from './CheckoutStepType';
 import CheckoutSupport from './CheckoutSupport';
 import { CustomerStep } from './CustomerStep/CustomerStep';
+import { IBCHeader } from './IBCHeader/IBCHeader';
+import { ShippingStep } from './ShippingStep/ShippingStep';
 import mapToCheckoutProps from './mapToCheckoutProps';
 import navigateToOrderConfirmation from './navigateToOrderConfirmation';
-import { ShippingStep } from './ShippingStep/ShippingStep';
 import { ibcUrl } from './utils/checkout-utils';
-import { IBCHeader } from './IBCHeader/IBCHeader';
 
 const CartSummary = lazy(() =>
   retry(
@@ -102,7 +99,8 @@ export interface CheckoutState {
   customer: ICustomer;
   order: Order;
   checkout: ICheckout;
-  isLoading: boolean;
+  checkoutLoading: boolean;
+  paymentLoading: boolean;
 }
 
 export interface WithCheckoutProps {
@@ -148,7 +146,8 @@ class Checkout extends Component<
     customer: {} as ICustomer,
     order: {} as Order,
     checkout: {} as any,
-    isLoading: true,
+    checkoutLoading: true,
+    paymentLoading: true,
   };
 
   private embeddedMessenger?: EmbeddedCheckoutMessenger;
@@ -256,7 +255,7 @@ class Checkout extends Component<
         customer: data.getCustomer()!,
         order: data.getOrder()!,
         checkout: data.getCheckout()!,
-        isLoading: false,
+        checkoutLoading: false,
       });
 
       if (isMultiShippingMode) {
@@ -277,7 +276,7 @@ class Checkout extends Component<
     const { error, isHidingStepNumbers } = this.state;
     let errorModal = null;
 
-    if (this.state.isLoading) {
+    if (this.state.paymentLoading || this.state.checkoutLoading) {
       return <CheckoutPageFallback />;
     }
 
@@ -561,6 +560,7 @@ class Checkout extends Component<
   };
 
   private handleReady: () => void = () => {
+    this.setState({ paymentLoading: false });
     this.navigateToNextIncompleteStep({ isDefault: true });
   };
 
