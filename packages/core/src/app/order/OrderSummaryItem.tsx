@@ -1,8 +1,4 @@
-import classNames from 'classnames';
-import { isNumber } from 'lodash';
 import React, { FunctionComponent, memo, ReactNode } from 'react';
-
-import { ShopperCurrency } from '../currency';
 
 export interface OrderSummaryItemProps {
   id: string | number;
@@ -20,63 +16,16 @@ export interface OrderSummaryItemOption {
   content: ReactNode;
 }
 
-const OrderSummaryItem: FunctionComponent<OrderSummaryItemProps> = ({
-  amount,
-  amountAfterDiscount,
-  image,
-  name,
-  productOptions,
-  quantity,
-  description,
-}) => (
-  <div className="product" data-test="cart-item">
-    <figure className="product-column product-figure">{image}</figure>
+const OrderSummaryItem: FunctionComponent<OrderSummaryItemProps> = ({ image, name, quantity }) => (
+  <div className="grid grid-cols-3 gap-4" data-test="cart-item">
+    <figure className="col-span-1">
+      <div className="aspect-w-9 relative aspect-h-12">{image}</div>
+    </figure>
 
-    <div className="product-column product-body">
-      <h4
-        className="product-title optimizedCheckout-contentPrimary"
-        data-test="cart-item-product-title"
-      >
+    <div className="flex flex-col gap-2 col-span-2">
+      <span className="text-ibc-blue w-full font-semibold" data-test="cart-item-product-title">
         {`${quantity} x ${name}`}
-      </h4>
-      {productOptions && productOptions.length > 0 && (
-        <ul
-          className="product-options optimizedCheckout-contentSecondary"
-          data-test="cart-item-product-options"
-        >
-          {productOptions.map((option, index) => (
-            <li className="product-option" data-test={option.testId} key={index}>
-              {option.content}
-            </li>
-          ))}
-        </ul>
-      )}
-      {description && (
-        <div
-          className="product-description optimizedCheckout-contentSecondary"
-          data-test="cart-item-product-description"
-        >
-          {description}
-        </div>
-      )}
-    </div>
-
-    <div className="product-column product-actions">
-      <div
-        className={classNames('product-price', 'optimizedCheckout-contentPrimary', {
-          'product-price--beforeDiscount':
-            isNumber(amountAfterDiscount) && amountAfterDiscount !== amount,
-        })}
-        data-test="cart-item-product-price"
-      >
-        <ShopperCurrency amount={amount} />
-      </div>
-
-      {isNumber(amountAfterDiscount) && amountAfterDiscount !== amount && (
-        <div className="product-price" data-test="cart-item-product-price--afterDiscount">
-          <ShopperCurrency amount={amountAfterDiscount} />
-        </div>
-      )}
+      </span>
     </div>
   </div>
 );
