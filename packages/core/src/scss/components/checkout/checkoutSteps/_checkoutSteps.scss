@@ -8,200 +8,199 @@
 // The form just gets too squashed between large and before xlarge when in 2 column
 // -----------------------------------------------------------------------------
 .checkout-steps {
-    counter-reset: $checkoutStep-counter;
-    list-style-type: none;
-    margin: 0;
+  counter-reset: $checkoutStep-counter;
+  list-style-type: none;
+  margin: 0;
 
-    @include breakpoint("medium") {
-        padding-right: (spacing("double") + spacing("double"));
-    }
+  @include breakpoint('medium') {
+    padding-right: (spacing('double') + spacing('double'));
+  }
 }
 
 .checkout-step {
-    border-bottom: container("border");
-    counter-increment: $checkoutStep-counter;
-    padding: spacing("single") 0;
+  border-bottom: container('border');
+  counter-increment: $checkoutStep-counter;
+  padding: spacing('single') 0;
 
-    &:last-child {
-        border: 0;
-    }
+  &:last-child {
+    border: 0;
+  }
 }
 
 .checkout-view-header {
-    margin-bottom: remCalc(10px);
+  margin-bottom: remCalc(10px);
 
-    &:last-child {
-        margin-bottom: 0;
-    }
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .checkout-view-content {
-    @include breakpoint("large") {
-        @include collapse;
-    }
+  @include breakpoint('large') {
+    @include collapse;
+  }
 }
 
 .checkout-step-info {
-    margin-bottom: spacing("single");
+  margin-bottom: spacing('single');
 }
 
 .checkout-form,
 .checklist-skeleton {
-    margin: 0;
+  margin: 0;
 
-    @include breakpoint("small") {
-        margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
-    }
+  // @include breakpoint("small") {
+  //     margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
+  // }
 
-    @include breakpoint("large") {
-        margin-left: 0;
-    }
+  // @include breakpoint("large") {
+  //     margin-left: 0;
+  // }
 
-    @include breakpoint(1080px) {
-        margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
-    }
+  // @include breakpoint(1080px) {
+  //     margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
+  // }
 }
 
 // Checkout Step Counter
 // -----------------------------------------------------------------------------
 .stepHeader-counter {
+  @include square($checkoutStep-counter-size);
+
+  background-color: color('primary');
+  border-radius: 50%;
+  text-align: center;
+  transition: transform 250ms ease;
+
+  &::before {
     @include square($checkoutStep-counter-size);
 
-    background-color: color("primary");
-    border-radius: 50%;
+    color: $checkoutStep-counter-color;
+    content: counter($checkoutStep-counter);
+    display: inline-block;
+    font-size: fontSize('small');
+    line-height: #{$checkoutStep-counter-size}px;
     text-align: center;
-    transition: transform 250ms ease;
+  }
 
-    &::before {
-        @include square($checkoutStep-counter-size);
-
-        color: $checkoutStep-counter-color;
-        content: counter($checkoutStep-counter);
-        display: inline-block;
-        font-size: fontSize("small");
-        line-height: #{$checkoutStep-counter-size}px;
-        text-align: center;
-    }
-
-    svg {
-        display: none;
-        fill: $checkoutStep-counter-color;
-        padding: $checkoutStep-counter-padding;
-    }
+  svg {
+    display: none;
+    fill: $checkoutStep-counter-color;
+    padding: $checkoutStep-counter-padding;
+  }
 }
 
 .stepHeader-counter--complete {
-    transform: scale(0.8);
+  transform: scale(0.8);
 
-    &::before {
-        @include square(0);
+  &::before {
+    @include square(0);
 
-        content: "";
-    }
+    content: '';
+  }
 
-    svg {
-        display: inline-block;
-        padding: $checkoutStep-counter-padding--small;
-    }
+  svg {
+    display: inline-block;
+    padding: $checkoutStep-counter-padding--small;
+  }
 }
 
 // Checkout Step Header
 // -----------------------------------------------------------------------------
 .stepHeader {
-    align-items: top;
-    display: flex;
-    flex-wrap: wrap;
-    padding: spacing("single") 0;
+  align-items: top;
+  display: flex;
+  flex-wrap: wrap;
 
-    @include breakpoint("small") {
-        flex-wrap: nowrap;
-    }
+  @include breakpoint('small') {
+    flex-wrap: nowrap;
+  }
 
-    @include breakpoint("large") {
-        flex-wrap: nowrap;
-    }
+  @include breakpoint('large') {
+    flex-wrap: nowrap;
+  }
 
-    &.is-clickable {
-        cursor: pointer;
-    }
+  &.is-clickable {
+    cursor: pointer;
+  }
 }
 
 .stepHeader-figure {
-    align-items: center;
-    display: flex;
-    height: remCalc($checkoutStep-counter-size);
-    margin-right: $checkoutStep-header-body-margin;
+  align-items: center;
+  display: flex;
+  height: remCalc($checkoutStep-counter-size);
+  margin-right: $checkoutStep-header-body-margin;
 }
 
 .stepHeader-title {
-    margin: 0 0 0 $checkoutStep-header-figure-margin;
-    min-width: 9rem;
+  margin: 0 0 0 $checkoutStep-header-figure-margin;
+  min-width: 9rem;
 }
 
 .remove-checkout-step-numbers {
-    li.checkout-step {
-        div.stepHeader-counter.icon {
-            display: none;
-        }
-
-        .checkout-form,
-        div.stepHeader-body,
-        div.checklist-skeleton,
-        h2.stepHeader-title {
-            margin-left: 0;
-        }
+  li.checkout-step {
+    div.stepHeader-counter.icon {
+      display: none;
     }
+
+    .checkout-form,
+    div.stepHeader-body,
+    div.checklist-skeleton,
+    h2.stepHeader-title {
+      margin-left: 0;
+    }
+  }
 }
 
 .stepHeader-body {
-    @include textTruncateMultiline;
+  @include textTruncateMultiline;
 
-    color: color("primary");
+  color: color('primary');
+  margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
+  margin-top: remCalc(10px);
+  order: 3;
+  width: 100%;
+
+  @include breakpoint('small') {
+    margin-left: 0;
+    order: inherit;
+  }
+
+  @include breakpoint('medium') {
     margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
-    margin-top: remCalc(10px);
-    order: 3;
-    width: 100%;
+  }
 
-    @include breakpoint("small") {
-        margin-left: 0;
-        order: inherit;
-    }
-
-    @include breakpoint("medium") {
-        margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
-    }
-
-    @include breakpoint("large") {
-        margin-left: 0;
-    }
+  @include breakpoint('large') {
+    margin-left: 0;
+  }
 }
 
 .stepHeader-actions {
-    align-self: flex-start;
-    margin-left: auto;
-    margin-top: remCalc(5px);
+  align-self: flex-start;
+  margin-left: auto;
+  margin-top: remCalc(5px);
 
-    @include breakpoint("small") {
-        margin-left: $checkoutStep-header-actions-margin;
-    }
+  @include breakpoint('small') {
+    margin-left: $checkoutStep-header-actions-margin;
+  }
 
-    .button {
-        margin-bottom: 0;
-    }
+  .button {
+    margin-bottom: 0;
+  }
 }
 
 .checkout-suggestion {
-    margin: 0;
+  margin: 0;
 
-    @include breakpoint("small") {
-        margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
-    }
+  @include breakpoint('small') {
+    margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
+  }
 
-    @include breakpoint("large") {
-        margin-left: 0;
-    }
+  @include breakpoint('large') {
+    margin-left: 0;
+  }
 
-    @include breakpoint(1080px) {
-        margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
-    }
+  @include breakpoint(1080px) {
+    margin-left: remCalc($checkoutStep-counter-size) + $checkoutStep-header-figure-margin;
+  }
 }

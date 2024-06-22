@@ -32,14 +32,14 @@ export const AddressDisplay = ({ address, displayConfig = {} }: AddressDisplay) 
   const finalConfig = { ...defaultConfig, ...displayConfig };
 
   return (
-    <div className="ibc-address-display">
+    <div className="text-ibc-blue flex flex-col text-large">
       {finalConfig.name && (
-        <span className="ibc-address-name">
+        <span className="font-semibold">
           {address?.firstName} {address?.lastName}
         </span>
       )}
       {finalConfig.company && address?.company && <span>{address?.company}</span>}
-      <span className="ibc-address1">{address?.address1}</span>
+      <span className="uppercase">{address?.address1}</span>
       <span>{address?.address2}</span>
       <span>
         {address?.city}, {address?.stateOrProvince} {address?.postalCode}

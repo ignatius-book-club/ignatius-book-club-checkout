@@ -9,8 +9,10 @@ type BillingStepProps = {
 
 export const BillingStep = ({ address }: BillingStepProps) => {
   return (
-    <div className="relative grid max-md:grid-cols-1 gap-4 md:grid-cols-3">
-      <span className="text-ibc-blue col-span-1 text-2xl font-semibold">Billing</span>
+    <div className="relative grid max-md:grid-cols-1 gap-4 md:grid-cols-3 border-light-border opacity-1 border-t py-6 border-b">
+      <span className="text-ibc-blue col-span-1 text-2xl font-semibold m-0 capitalize">
+        Billing
+      </span>
       <div className="col-span-2 flex flex-col gap-4">
         <AddressDisplay
           displayConfig={{
@@ -20,17 +22,14 @@ export const BillingStep = ({ address }: BillingStepProps) => {
           }}
           address={address}
         />
-
-        {/* {consignment?.selectedShippingOption?.entityId && (
-          <span className="border-light-border text-ibc-blue border-t pt-4">
-            {consignment?.selectedShippingOption?.description}:{' '}
-            <PriceDisplay amount={consignment.selectedShippingOption.cost?.value} />
-          </span>
-        )} */}
       </div>
       <a
         href={`${ibcUrl}/checkout?edit=billing`}
-        className="text-primary pointer-events-auto absolute right-0 top-0 text-sm underline max-md:col-span-1 md:col-span-2"
+        className="text-primary pointer-events-auto absolute text-sm underline max-md:col-span-1 md:col-span-2"
+        style={{
+          top: '1.5rem',
+          right: '1.5rem',
+        }}
       >
         Edit
       </a>

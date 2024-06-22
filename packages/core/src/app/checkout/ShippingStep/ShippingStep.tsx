@@ -1,6 +1,7 @@
+import { Address } from '@bigcommerce/checkout-sdk';
 import React from 'react';
 import { AddressDisplay } from '../AddressDisplay/AddressDisplay';
-import { Address } from '@bigcommerce/checkout-sdk';
+import { ibcUrl } from '../utils/checkout-utils';
 
 type ShippingStepProps = {
   address: Address;
@@ -8,8 +9,8 @@ type ShippingStepProps = {
 
 export const ShippingStep = ({ address }: ShippingStepProps) => {
   return (
-    <div className="relative grid max-md:grid-cols-1 gap-4 md:grid-cols-3">
-      <span className="text-ibc-blue col-span-1 text-2xl font-semibold">Shipping</span>
+    <div className="relative grid max-md:grid-cols-1 gap-4 md:grid-cols-3 border-light-border opacity-1 border-t py-6">
+      <h2 className="text-ibc-blue col-span-1 text-2xl font-semibold m-0 capitalize">Shipping</h2>
       <div className="col-span-2 flex flex-col gap-4">
         <AddressDisplay
           displayConfig={{
@@ -27,12 +28,17 @@ export const ShippingStep = ({ address }: ShippingStepProps) => {
           </span>
         )} */}
       </div>
-      <span
+      <a
+        href={`${ibcUrl}/checkout?edit=shipping`}
         role="button"
-        className="text-primary pointer-events-auto absolute right-0 top-0 text-sm underline max-md:col-span-1 md:col-span-2"
+        className="text-primary pointer-events-auto absolute text-sm underline max-md:col-span-1 md:col-span-2"
+        style={{
+          top: '1.5rem',
+          right: '1.5rem',
+        }}
       >
         Edit
-      </span>
+      </a>
     </div>
   );
 };
