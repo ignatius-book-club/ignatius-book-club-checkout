@@ -156,8 +156,6 @@ class Customer extends Component<
   }
 
   render(): ReactNode {
-    console.log('Customer render::::');
-
     const { viewType } = this.props;
     const { isEmailLoginFormOpen, isReady } = this.state;
     const shouldRenderGuestForm = viewType === CustomerViewType.Guest;

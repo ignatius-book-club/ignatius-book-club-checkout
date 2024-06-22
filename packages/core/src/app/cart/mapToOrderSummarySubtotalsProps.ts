@@ -4,29 +4,32 @@ import { OrderSummarySubtotalsProps } from '../order';
 import { hasSelectedShippingOptions } from '../shipping';
 
 export default function mapToOrderSummarySubtotalsProps({
-    subtotal,
-    cart: { discountAmount, isTaxIncluded },
+  subtotal,
+  cart: { discountAmount, isTaxIncluded },
+  giftCertificates,
+  consignments,
+  handlingCostTotal,
+  shippingCostBeforeDiscount,
+  giftWrappingCostTotal,
+  coupons,
+  taxes,
+  fees,
+}: Checkout): OrderSummarySubtotalsProps {
+  console.log('huh:::::: ', consignments);
+  console.log('hasSelectedShippingOptions:::::: ', hasSelectedShippingOptions(consignments));
+
+  return {
+    subtotalAmount: subtotal,
+    discountAmount,
     giftCertificates,
-    consignments,
-    handlingCostTotal,
-    shippingCostBeforeDiscount,
-    giftWrappingCostTotal,
+    giftWrappingAmount: giftWrappingCostTotal,
+    shippingAmount: hasSelectedShippingOptions(consignments)
+      ? shippingCostBeforeDiscount
+      : undefined,
+    handlingAmount: handlingCostTotal,
     coupons,
     taxes,
     fees,
-}: Checkout): OrderSummarySubtotalsProps {
-    return {
-        subtotalAmount: subtotal,
-        discountAmount,
-        giftCertificates,
-        giftWrappingAmount: giftWrappingCostTotal,
-        shippingAmount: hasSelectedShippingOptions(consignments)
-            ? shippingCostBeforeDiscount
-            : undefined,
-        handlingAmount: handlingCostTotal,
-        coupons,
-        taxes,
-        fees,
-        isTaxIncluded,
-    };
+    isTaxIncluded,
+  };
 }

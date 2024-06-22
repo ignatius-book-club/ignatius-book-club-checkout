@@ -70,6 +70,7 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
   //   onRemovedCoupon,
 }) => {
   const taxTotal = taxes?.reduce((acc, tax) => acc + tax.amount, 0);
+  console.log('shippingAmount::::: ', shippingAmount);
 
   return (
     <>

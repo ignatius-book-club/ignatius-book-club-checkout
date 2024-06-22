@@ -56,9 +56,6 @@ const CustomerInfo: FunctionComponent<CustomerInfoProps & WithCheckoutCustomerIn
     }
   };
 
-  console.log('email::::: ', email);
-  console.log('isSignedIn::::: ', isSignedIn);
-
   return (
     <div className="customerView" data-test="checkout-customer-info">
       <div className="customerView-body optimizedCheckout-contentPrimary" data-test="customer-info">

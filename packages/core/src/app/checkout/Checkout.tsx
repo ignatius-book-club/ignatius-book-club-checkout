@@ -10,6 +10,7 @@ import {
   EmbeddedCheckoutMessengerOptions,
   FlashMessage,
   Customer as ICustomer,
+  Checkout as ICheckout,
   Order,
   PaymentMethod,
   Promotion,
@@ -98,6 +99,7 @@ export interface CheckoutState {
   billingAddress?: BillingAddress;
   customer: ICustomer;
   order: Order;
+  checkout: ICheckout;
 }
 
 export interface WithCheckoutProps {
@@ -142,6 +144,7 @@ class Checkout extends Component<
     buttonConfigs: [],
     customer: {} as ICustomer,
     order: {} as Order,
+    checkout: {} as any,
   };
 
   private embeddedMessenger?: EmbeddedCheckoutMessenger;
@@ -182,8 +185,6 @@ class Checkout extends Component<
         }),
         extensionService.loadExtensions(),
       ]);
-
-      console.log('checkout data::::', data.getCheckout());
 
       const providers = data.getConfig()?.checkoutSettings?.remoteCheckoutProviders || [];
       const supportedProviders = getSupportedMethodIds(providers);
@@ -241,8 +242,6 @@ class Checkout extends Component<
         hasMultiShippingEnabled &&
         isUsingMultiShipping(consignments, cart.lineItems);
 
-      console.log('Checkout.customer:::: ', data.getCustomer());
-
       this.setState({
         isBillingSameAsShipping: checkoutBillingSameAsShippingEnabled,
         isHidingStepNumbers: removeStepNumbersFlag,
@@ -252,6 +251,7 @@ class Checkout extends Component<
         billingAddress: data.getBillingAddress(),
         customer: data.getCustomer()!,
         order: data.getOrder()!,
+        checkout: data.getCheckout()!,
       });
 
       if (isMultiShippingMode) {
@@ -421,7 +421,9 @@ class Checkout extends Component<
         );
 
       case CheckoutStepType.Shipping:
-        return <ShippingStep address={this.state.shippingAddress!} />;
+        return (
+          <ShippingStep address={this.state.shippingAddress!} checkout={this.state.checkout} />
+        );
 
       case CheckoutStepType.Billing:
         return <BillingStep address={this.state.billingAddress!} />;
