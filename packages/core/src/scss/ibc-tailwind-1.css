@@ -8128,3 +8128,6 @@ html {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 0.25s;
 }
+.font-brother-1816 {
+  font-family: 'Brother 1816', sans-serif;
+}

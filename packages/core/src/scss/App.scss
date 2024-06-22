@@ -75,5 +75,10 @@
 
 @import 'layouts/layouts';
 
+@import './brother-1816.css';
 @import './ibc-tailwind-1.css';
 @import './ibc-tailwind-2.css';
+
+html * {
+  font-family: var(--font-brother-1816) !important;
+}
