@@ -3,7 +3,6 @@ import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 
-import OrderSummaryHeader from './OrderSummaryHeader';
 import OrderSummaryItems from './OrderSummaryItems';
 import OrderSummaryPrice from './OrderSummaryPrice';
 import OrderSummarySection from './OrderSummarySection';
@@ -12,69 +11,67 @@ import OrderSummaryTotal from './OrderSummaryTotal';
 import removeBundledItems from './removeBundledItems';
 
 export interface OrderSummaryProps {
-    lineItems: LineItemMap;
-    total: number;
-    headerLink: ReactNode;
-    storeCurrency: StoreCurrency;
-    shopperCurrency: ShopperCurrency;
-    additionalLineItems?: ReactNode;
+  lineItems: LineItemMap;
+  total: number;
+  headerLink: ReactNode;
+  storeCurrency: StoreCurrency;
+  shopperCurrency: ShopperCurrency;
+  additionalLineItems?: ReactNode;
 }
 
 const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsProps> = ({
-    isTaxIncluded,
-    taxes,
-    storeCurrency,
-    shopperCurrency,
-    headerLink,
-    additionalLineItems,
-    lineItems,
-    total,
-    ...orderSummarySubtotalsProps
+  isTaxIncluded,
+  taxes,
+  storeCurrency,
+  shopperCurrency,
+  headerLink,
+  additionalLineItems,
+  lineItems,
+  total,
+  ...orderSummarySubtotalsProps
 }) => {
-    const nonBundledLineItems = useMemo(() => removeBundledItems(lineItems), [lineItems]);
-    const displayInclusiveTax = isTaxIncluded && taxes && taxes.length > 0;
+  const nonBundledLineItems = useMemo(() => removeBundledItems(lineItems), [lineItems]);
+  const displayInclusiveTax = isTaxIncluded && taxes && taxes.length > 0;
 
-    return (
-        <article className="cart optimizedCheckout-orderSummary" data-test="cart">
-            <OrderSummaryHeader>{headerLink}</OrderSummaryHeader>
+  return (
+    <article data-test="cart" className="flex flex-col gap-4 ibc-card-orange w-full">
+      <h3 className="text-ibc-blue mb-4 text-2xl font-semibold">Order Summary</h3>
 
-            <OrderSummarySection>
-                <OrderSummaryItems displayLineItemsCount items={nonBundledLineItems} />
-            </OrderSummarySection>
+      <OrderSummaryItems displayLineItemsCount={false} items={nonBundledLineItems} />
 
-            <OrderSummarySection>
-                <OrderSummarySubtotals isTaxIncluded={isTaxIncluded} taxes={taxes} {...orderSummarySubtotalsProps} />
-                {additionalLineItems}
-            </OrderSummarySection>
+      <OrderSummarySubtotals
+        isTaxIncluded={isTaxIncluded}
+        taxes={taxes}
+        {...orderSummarySubtotalsProps}
+      />
+      {additionalLineItems}
 
-            <OrderSummarySection>
-                <OrderSummaryTotal
-                    orderAmount={total}
-                    shopperCurrencyCode={shopperCurrency.code}
-                    storeCurrencyCode={storeCurrency.code}
-                />
-            </OrderSummarySection>
+      <OrderSummaryTotal
+        orderAmount={total}
+        shopperCurrencyCode={shopperCurrency.code}
+        storeCurrencyCode={storeCurrency.code}
+      />
 
-            {displayInclusiveTax && <OrderSummarySection>
-                <h5
-                    className="cart-taxItem cart-taxItem--subtotal optimizedCheckout-contentPrimary"
-                    data-test="tax-text"
-                >
-                    <TranslatedString
-                        id="tax.inclusive_label"
-                    />
-                </h5>
-                {(taxes || []).map((tax, index) => (
-                    <OrderSummaryPrice
-                        amount={tax.amount}
-                        key={index}
-                        label={tax.name}
-                        testId="cart-taxes"
-                    />
-                ))}
-            </OrderSummarySection>}
-        </article>
-    );
+      {displayInclusiveTax && (
+        <OrderSummarySection>
+          <h5
+            className="cart-taxItem cart-taxItem--subtotal optimizedCheckout-contentPrimary"
+            data-test="tax-text"
+          >
+            <TranslatedString id="tax.inclusive_label" />
+          </h5>
+          {(taxes || []).map((tax, index) => (
+            <OrderSummaryPrice
+              amount={tax.amount}
+              key={index}
+              label={tax.name}
+              testId="cart-taxes"
+            />
+          ))}
+        </OrderSummarySection>
+      )}
+    </article>
+  );
 };
 
 export default OrderSummary;

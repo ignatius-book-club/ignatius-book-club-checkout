@@ -3,7 +3,6 @@ import { compact } from 'lodash';
 import { createSelector } from 'reselect';
 
 import { EMPTY_ARRAY } from '../common/utility';
-import { PaymentMethodId } from '../payment/paymentMethod';
 
 import CheckoutStepType from './CheckoutStepType';
 
@@ -11,21 +10,21 @@ import CheckoutStepType from './CheckoutStepType';
 // it uses its own components in the customer and shipping steps, unfortunately in order to preserve the UX
 // when reloading the checkout page it's necessary to refill the stripe components with the information saved.
 // In this step, we require that the customer strategy be reloaded the first time.
-const getStripeLinkAndCheckoutPageIsReloaded = (
-  isUsingWallet: boolean,
-  hasEmail: boolean,
-  isGuest: boolean,
-  shouldUseStripeLinkByMinimumAmount: boolean,
-  providerWithCustomCheckout?: string | null,
-) => {
-  return (
-    !isUsingWallet &&
-    providerWithCustomCheckout === PaymentMethodId.StripeUPE &&
-    hasEmail &&
-    isGuest &&
-    shouldUseStripeLinkByMinimumAmount
-  );
-};
+// const getStripeLinkAndCheckoutPageIsReloaded = (
+//   isUsingWallet: boolean,
+//   hasEmail: boolean,
+//   isGuest: boolean,
+//   shouldUseStripeLinkByMinimumAmount: boolean,
+//   providerWithCustomCheckout?: string | null,
+// ) => {
+//   return (
+//     !isUsingWallet &&
+//     providerWithCustomCheckout === PaymentMethodId.StripeUPE &&
+//     hasEmail &&
+//     isGuest &&
+//     shouldUseStripeLinkByMinimumAmount
+//   );
+// };
 
 const getCustomerStepStatus = createSelector(
   ({ data }: CheckoutSelectors) => data.getCheckout(),

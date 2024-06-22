@@ -23,22 +23,14 @@ import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
 import { ExtensionContextProps, withExtension } from '@bigcommerce/checkout/checkout-extension';
 import { ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { TranslatedString, withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
-import { AddressFormSkeleton, ChecklistSkeleton } from '@bigcommerce/checkout/ui';
+import { ChecklistSkeleton } from '@bigcommerce/checkout/ui';
 
 import { withAnalytics } from '../analytics';
-import { StaticBillingAddress } from '../billing';
 import { EmptyCartMessage } from '../cart';
 import { withCheckout } from '../checkout';
 import { CustomError, ErrorModal, isCustomError } from '../common/error';
 import { retry } from '../common/utility';
-import {
-  CheckoutButtonContainer,
-  CheckoutSuggestion,
-  Customer,
-  CustomerInfo,
-  CustomerSignOutEvent,
-  CustomerViewType,
-} from '../customer';
+import { CheckoutButtonContainer, CustomerViewType } from '../customer';
 import { getSupportedMethodIds } from '../customer/getSupportedMethods';
 import { SubscribeSessionStorage } from '../customer/SubscribeSessionStorage';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
@@ -46,27 +38,17 @@ import { PromotionBannerList } from '../promotion';
 import { hasSelectedShippingOptions, isUsingMultiShipping } from '../shipping';
 import { ShippingOptionExpiredError } from '../shipping/shippingOption';
 import { LazyContainer, LoadingNotification, LoadingOverlay } from '../ui/loading';
-import { MobileView } from '../ui/responsive';
 
+import { BillingStep } from './BillingStep/BillingStep';
 import CheckoutStep from './CheckoutStep';
 import CheckoutStepStatus from './CheckoutStepStatus';
 import CheckoutStepType from './CheckoutStepType';
 import CheckoutSupport from './CheckoutSupport';
+import { CustomerStep } from './CustomerStep/CustomerStep';
 import mapToCheckoutProps from './mapToCheckoutProps';
 import navigateToOrderConfirmation from './navigateToOrderConfirmation';
 import { ShippingStep } from './ShippingStep/ShippingStep';
-import { BillingStep } from './BillingStep/BillingStep';
-import { CustomerStep } from './CustomerStep/CustomerStep';
-
-const Billing = lazy(() =>
-  retry(
-    () =>
-      import(
-        /* webpackChunkName: "billing" */
-        '../billing/Billing'
-      ),
-  ),
-);
+import { ibcUrl } from './utils/checkout-utils';
 
 const CartSummary = lazy(() =>
   retry(
@@ -74,16 +56,6 @@ const CartSummary = lazy(() =>
       import(
         /* webpackChunkName: "cart-summary" */
         '../cart/CartSummary'
-      ),
-  ),
-);
-
-const CartSummaryDrawer = lazy(() =>
-  retry(
-    () =>
-      import(
-        /* webpackChunkName: "cart-summary-drawer" */
-        '../cart/CartSummaryDrawer'
       ),
   ),
 );
@@ -211,7 +183,7 @@ class Checkout extends Component<
         extensionService.loadExtensions(),
       ]);
 
-      console.log('checkout data::::', data);
+      console.log('checkout data::::', data.getCheckout());
 
       const providers = data.getConfig()?.checkoutSettings?.remoteCheckoutProviders || [];
       const supportedProviders = getSupportedMethodIds(providers);
@@ -320,7 +292,7 @@ class Checkout extends Component<
         id="checkout-page-container"
       >
         <div className="header-top-container ibc-container" style={{ height: '70px' }}>
-          <a href="https://localhost:3002/cart" style={{ filter: 'brightness(0) invert(1)' }}>
+          <a href={`${ibcUrl}/cart`} style={{ filter: 'brightness(0) invert(1)' }}>
             <img
               src="https://res.cloudinary.com/dsewycgig/image/upload/v1705889390/ibf_assets/ibf-brightblue_1701195858__78176.original_u75ege.png"
               alt="Ignatius Book Fairs"
@@ -342,13 +314,22 @@ class Checkout extends Component<
           </div>
         </div>
 
-        <div className="bg-light-page-bg ibc-container py-20 checkout-page-container">
-          <h1 className="checkout-page-title">
-            Checkout
-            <a href="https://localhost:3002/cart">Edit Cart</a>
-          </h1>
+        <div className="bg-light-page-bg ibc-container relative z-40 py-8 lg:py-16">
+          <div className="ibc-container-fixed">
+            <h1 className="text-ibc-blue items flex justify-between text-3xl font-semibold">
+              Checkout
+              <a href={`${ibcUrl}/cart`}>Edit Cart</a>
+            </h1>
+            <div className="grid grid-cols-3 gap-8 py-10">
+              <div className="max-lg:col-span-3 lg:col-span-2">{this.renderContent()}</div>
+              <div className="max-lg:col-span-3 lg:col-span-1">
+                <LazyContainer>
+                  <CartSummary />
+                </LazyContainer>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="layout optimizedCheckout-contentPrimary">{this.renderContent()}</div>
 
         {errorModal}
       </div>
@@ -377,7 +358,7 @@ class Checkout extends Component<
 
     return (
       <LoadingOverlay hideContentWhenLoading isLoading={isRedirecting}>
-        <div className="layout-main">
+        <div>
           <LoadingNotification
             isLoading={
               (!isShowingWalletButtonsOnTop && isPending) ||
@@ -410,8 +391,6 @@ class Checkout extends Component<
               )}
           </ol>
         </div>
-
-        {this.renderCartSummary()}
       </LoadingOverlay>
     );
   }
@@ -435,45 +414,6 @@ class Checkout extends Component<
       default:
         return null;
     }
-  }
-
-  private renderCustomerStep(step: CheckoutStepStatus): ReactNode {
-    const { isGuestEnabled, isShowingWalletButtonsOnTop } = this.props;
-    const {
-      customerViewType = isGuestEnabled ? CustomerViewType.Guest : CustomerViewType.Login,
-      isSubscribed,
-    } = this.state;
-
-    return (
-      <CheckoutStep
-        {...step}
-        heading={<TranslatedString id="customer.customer_heading" />}
-        key={step.type}
-        onEdit={this.handleEditStep}
-        onExpanded={this.handleExpanded}
-        suggestion={<CheckoutSuggestion />}
-        summary={<CustomerInfo onSignOut={this.handleSignOut} onSignOutError={this.handleError} />}
-      >
-        <Customer
-          checkEmbeddedSupport={this.checkEmbeddedSupport}
-          isEmbedded={isEmbedded()}
-          isSubscribed={isSubscribed}
-          isWalletButtonsOnTop={isShowingWalletButtonsOnTop}
-          onAccountCreated={this.navigateToNextIncompleteStep}
-          onChangeViewType={this.setCustomerViewType}
-          onContinueAsGuest={this.navigateToNextIncompleteStep}
-          onContinueAsGuestError={this.handleError}
-          onReady={this.handleReady}
-          onSignIn={this.navigateToNextIncompleteStep}
-          onSignInError={this.handleError}
-          onSubscribeToNewsletter={this.handleNewsletterSubscription}
-          onUnhandledError={this.handleUnhandledError}
-          onWalletButtonClick={this.handleWalletButtonClick}
-          step={step}
-          viewType={customerViewType}
-        />
-      </CheckoutStep>
-    );
   }
 
   private renderPaymentStep(step: CheckoutStepStatus): ReactNode {
@@ -504,30 +444,6 @@ class Checkout extends Component<
           />
         </LazyContainer>
       </CheckoutStep>
-    );
-  }
-
-  private renderCartSummary(): ReactNode {
-    return (
-      <MobileView>
-        {(matched) => {
-          if (matched) {
-            return (
-              <LazyContainer>
-                <CartSummaryDrawer />
-              </LazyContainer>
-            );
-          }
-
-          return (
-            <aside className="layout-cart">
-              <LazyContainer>
-                <CartSummary />
-              </LazyContainer>
-            </aside>
-          );
-        }}
-      </MobileView>
     );
   }
 
@@ -665,55 +581,6 @@ class Checkout extends Component<
 
   private handleReady: () => void = () => {
     this.navigateToNextIncompleteStep({ isDefault: true });
-  };
-
-  private handleNewsletterSubscription: (subscribed: boolean) => void = (subscribed) => {
-    this.setState({ isSubscribed: subscribed });
-  };
-
-  private handleSignOut: (event: CustomerSignOutEvent) => void = ({ isCartEmpty }) => {
-    const { loginUrl, cartUrl, isPriceHiddenFromGuests, isGuestEnabled } = this.props;
-
-    if (isPriceHiddenFromGuests) {
-      if (window.top) {
-        return (window.top.location.href = cartUrl);
-      }
-    }
-
-    if (this.embeddedMessenger) {
-      this.embeddedMessenger.postSignedOut();
-    }
-
-    if (isGuestEnabled) {
-      this.setCustomerViewType(CustomerViewType.Guest);
-    }
-
-    if (isCartEmpty) {
-      this.setState({ isCartEmpty: true });
-
-      if (!isEmbedded()) {
-        if (window.top) {
-          return window.top.location.assign(loginUrl);
-        }
-      }
-    }
-
-    this.navigateToStep(CheckoutStepType.Customer);
-  };
-
-  private setCustomerViewType: (viewType: CustomerViewType) => void = (customerViewType) => {
-    const { createAccountUrl } = this.props;
-
-    if (customerViewType === CustomerViewType.CreateAccount && isEmbedded()) {
-      if (window.top) {
-        window.top.location.replace(createAccountUrl);
-      }
-
-      return;
-    }
-
-    this.navigateToStep(CheckoutStepType.Customer);
-    this.setState({ customerViewType });
   };
 
   private handleBeforeExit: () => void = () => {

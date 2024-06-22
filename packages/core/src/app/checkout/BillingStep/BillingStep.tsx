@@ -1,6 +1,7 @@
+import { Address } from '@bigcommerce/checkout-sdk';
 import React from 'react';
 import { AddressDisplay } from '../AddressDisplay/AddressDisplay';
-import { Address } from '@bigcommerce/checkout-sdk';
+import { ibcUrl } from '../utils/checkout-utils';
 
 type BillingStepProps = {
   address: Address;
@@ -28,11 +29,7 @@ export const BillingStep = ({ address }: BillingStepProps) => {
         )} */}
       </div>
       <a
-        href={
-          process.env.NODE_ENV === 'development'
-            ? 'http://localhost:3002/checkout?edit=billing'
-            : 'https://www.ignatiusbookfairs.com/checkout?edit=billing'
-        }
+        href={`${ibcUrl}/checkout?edit=billing`}
         className="text-primary pointer-events-auto absolute right-0 top-0 text-sm underline max-md:col-span-1 md:col-span-2"
       >
         Edit

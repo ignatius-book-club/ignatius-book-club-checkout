@@ -95,10 +95,6 @@ function mapToWithCheckoutCustomerInfoProps({
   const checkout = getCheckout();
   const customer = getCustomer();
 
-  console.log('billingAddress::::: ', billingAddress);
-  console.log('checkout::::: ', checkout);
-  console.log('customer::::: ', customer);
-
   if (!billingAddress || !checkout || !customer) {
     return null;
   }
