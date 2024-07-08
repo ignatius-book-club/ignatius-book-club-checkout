@@ -18,6 +18,7 @@ import {
 } from '../embeddedCheckout';
 
 import Checkout from './Checkout';
+import CheckoutNew from './CheckoutNew';
 
 export interface CheckoutAppProps {
     checkoutId: string;
@@ -47,6 +48,12 @@ export default class CheckoutApp extends Component<CheckoutAppProps> {
                 sampleRate: props.sentrySampleRate ? props.sentrySampleRate : 0.1,
             },
         );
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const newCheckoutParam = urlParams.get('newCheckout');
+        this.state = {
+            newCheckout: newCheckoutParam === 'true',
+        }
     }
 
     componentDidMount(): void {
@@ -57,23 +64,33 @@ export default class CheckoutApp extends Component<CheckoutAppProps> {
 
     render() {
         return (
-            <ErrorBoundary logger={this.errorLogger}>
-                <LocaleProvider checkoutService={this.checkoutService}>
-                    <CheckoutProvider checkoutService={this.checkoutService}>
-                        <AnalyticsProvider checkoutService={this.checkoutService}>
-                            <ExtensionProvider checkoutService={this.checkoutService}>
-                                <Checkout
-                                    {...this.props}
-                                    createEmbeddedMessenger={createEmbeddedCheckoutMessenger}
-                                    embeddedStylesheet={this.embeddedStylesheet}
-                                    embeddedSupport={this.embeddedSupport}
-                                    errorLogger={this.errorLogger}
-                                />
-                            </ExtensionProvider>
-                        </AnalyticsProvider>
-                    </CheckoutProvider>
-                </LocaleProvider>
-            </ErrorBoundary>
+          <ErrorBoundary logger={this.errorLogger}>
+            <LocaleProvider checkoutService={this.checkoutService}>
+              <CheckoutProvider checkoutService={this.checkoutService}>
+                <AnalyticsProvider checkoutService={this.checkoutService}>
+                  <ExtensionProvider checkoutService={this.checkoutService}>
+                    {(this.state as any).newCheckout ? (
+                      <CheckoutNew
+                        {...this.props}
+                        createEmbeddedMessenger={createEmbeddedCheckoutMessenger}
+                        embeddedStylesheet={this.embeddedStylesheet}
+                        embeddedSupport={this.embeddedSupport}
+                        errorLogger={this.errorLogger}
+                      />
+                    ) : (
+                      <Checkout
+                        {...this.props}
+                        createEmbeddedMessenger={createEmbeddedCheckoutMessenger}
+                        embeddedStylesheet={this.embeddedStylesheet}
+                        embeddedSupport={this.embeddedSupport}
+                        errorLogger={this.errorLogger}
+                      />
+                    )}
+                  </ExtensionProvider>
+                </AnalyticsProvider>
+              </CheckoutProvider>
+            </LocaleProvider>
+          </ErrorBoundary>
         );
     }
 }
