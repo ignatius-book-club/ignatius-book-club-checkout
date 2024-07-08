@@ -7,11 +7,9 @@ export interface LoadingNotificationProps {
 }
 
 const LoadingNotification: FunctionComponent<LoadingNotificationProps> = ({ isLoading }) => {
-  // if (!isLoading) {
-  //     return null;
-  // }
-
-  console.log('isLoading::::', isLoading);
+  if (!isLoading) {
+    return null;
+  }
 
   return (
     <div className="loadingNotification">
