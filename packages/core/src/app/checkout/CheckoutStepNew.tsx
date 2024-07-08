@@ -2,8 +2,10 @@ import classNames from 'classnames';
 import { noop } from 'lodash';
 import React, { Component, createRef, ReactNode } from 'react';
 import { CSSTransition } from 'react-transition-group';
+
 import { isMobileView, MobileView } from '../ui/responsive';
-import CheckoutStepHeader from './CheckoutStepHeader';
+
+import CheckoutStepHeader from './CheckoutStepHeaderNew';
 import CheckoutStepType from './CheckoutStepType';
 
 export interface CheckoutStepProps {
@@ -28,7 +30,7 @@ export default class CheckoutStep extends Component<CheckoutStepProps, CheckoutS
     isClosed: true,
   };
 
-  private containerRef = createRef<HTMLLIElement>();
+  private containerRef = createRef<HTMLDivElement>();
   private contentRef = createRef<HTMLDivElement>();
   private timeoutRef?: number;
   private timeoutDelay?: number;
@@ -64,7 +66,7 @@ export default class CheckoutStep extends Component<CheckoutStepProps, CheckoutS
     const { isClosed } = this.state;
 
     return (
-      <li
+      <div
         className={classNames('checkout-step', 'optimizedCheckout-checkoutStep', {
           [`checkout-step--${type}`]: !!type,
         })}
@@ -89,13 +91,12 @@ export default class CheckoutStep extends Component<CheckoutStepProps, CheckoutS
         )}
 
         {this.renderContent()}
-      </li>
+      </div>
     );
   }
 
   private renderContent(): ReactNode {
     const { children, isActive, isBusy } = this.props;
-    console.log('checkout ::::: ')
 
     return (
       <MobileView>

@@ -3,7 +3,6 @@ import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 
-import OrderSummaryHeader from './OrderSummaryHeader';
 import OrderSummaryItems from './OrderSummaryItems';
 import OrderSummaryPrice from './OrderSummaryPrice';
 import OrderSummarySection from './OrderSummarySection';
@@ -35,29 +34,23 @@ const OrderSummary: FunctionComponent<OrderSummaryProps & OrderSummarySubtotalsP
   const displayInclusiveTax = isTaxIncluded && taxes && taxes.length > 0;
 
   return (
-    <article className="cart optimizedCheckout-orderSummary" data-test="cart">
-      <OrderSummaryHeader>{headerLink}</OrderSummaryHeader>
+    <article data-test="cart" className="flex flex-col gap-4 ibc-card-orange w-full">
+      <h3 className="text-ibc-blue mb-4 text-2xl font-semibold">Order Summary</h3>
 
-      <OrderSummarySection>
-        <OrderSummaryItems displayLineItemsCount items={nonBundledLineItems} />
-      </OrderSummarySection>
+      <OrderSummaryItems displayLineItemsCount={false} items={nonBundledLineItems} />
 
-      <OrderSummarySection>
-        <OrderSummarySubtotals
-          isTaxIncluded={isTaxIncluded}
-          taxes={taxes}
-          {...orderSummarySubtotalsProps}
-        />
-        {additionalLineItems}
-      </OrderSummarySection>
+      <OrderSummarySubtotals
+        isTaxIncluded={isTaxIncluded}
+        taxes={taxes}
+        {...orderSummarySubtotalsProps}
+      />
+      {additionalLineItems}
 
-      <OrderSummarySection>
-        <OrderSummaryTotal
-          orderAmount={total}
-          shopperCurrencyCode={shopperCurrency.code}
-          storeCurrencyCode={storeCurrency.code}
-        />
-      </OrderSummarySection>
+      <OrderSummaryTotal
+        orderAmount={total}
+        shopperCurrencyCode={shopperCurrency.code}
+        storeCurrencyCode={storeCurrency.code}
+      />
 
       {displayInclusiveTax && (
         <OrderSummarySection>

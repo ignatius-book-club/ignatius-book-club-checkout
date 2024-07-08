@@ -39,7 +39,7 @@ import { ShippingOptionExpiredError } from '../shipping/shippingOption';
 import { LazyContainer } from '../ui/loading';
 import { BillingStep } from './BillingStep/BillingStep';
 import { CheckoutPageFallback } from './CheckoutPageFallback/CheckoutPageFallback';
-import CheckoutStep from './CheckoutStep';
+import CheckoutStep from './CheckoutStepNew';
 import CheckoutStepStatus from './CheckoutStepStatus';
 import CheckoutStepType from './CheckoutStepType';
 import CheckoutSupport from './CheckoutSupport';

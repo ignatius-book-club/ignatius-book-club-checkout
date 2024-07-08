@@ -1,9 +1,13 @@
-import { preventDefault } from '@bigcommerce/checkout/dom-utils';
-import { TranslatedString } from '@bigcommerce/checkout/locale';
 import classNames from 'classnames';
 import { noop } from 'lodash';
 import React, { FunctionComponent, memo, ReactNode } from 'react';
+
+import { preventDefault } from '@bigcommerce/checkout/dom-utils';
+import { TranslatedString } from '@bigcommerce/checkout/locale';
+
 import { Button, ButtonSize, ButtonVariant } from '../ui/button';
+import { IconCheck } from '../ui/icon';
+
 import CheckoutStepType from './CheckoutStepType';
 
 export interface CheckoutStepHeaderProps {
@@ -27,24 +31,24 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
 }) => {
   return (
     <div
-      className={classNames('stepHeader', {
-        'is-readonly': !isEditable,
-        'is-clickable': isEditable && !isActive,
-      })}
-      onClick={preventDefault(isEditable && onEdit ? () => onEdit(type) : noop)}
+      // className={classNames('stepHeader', {
+      //   'is-readonly': !isEditable,
+      //   'is-clickable': isEditable && !isActive,
+      // })}
+      className='stepHeader is-clickable'
+      onClick={() => {
+        onEdit?.(type)
+      }}
+      // onClick={preventDefault(isEditable && onEdit ? () => onEdit(type) : noop)}
     >
       <div className="stepHeader-figure stepHeader-column">
-        {/* <IconCheck
-                    additionalClassName={classNames(
-                        'stepHeader-counter',
-                        'optimizedCheckout-step',
-                        { 'stepHeader-counter--complete': isComplete },
-                    )}
-                /> */}
+        <IconCheck
+          additionalClassName={classNames('stepHeader-counter', 'optimizedCheckout-step', {
+            'stepHeader-counter--complete': isComplete,
+          })}
+        />
 
-        <h2 className="text-ibc-blue col-span-1 text-2xl font-semibold m-0 capitalize">
-          {heading}
-        </h2>
+        <h2 className="stepHeader-title optimizedCheckout-headingPrimary">{heading}</h2>
       </div>
 
       <div
@@ -54,18 +58,18 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
         {!isActive && isComplete && summary}
       </div>
 
-      {isEditable && !isActive && (
-        <div className="stepHeader-actions stepHeader-column">
-          <Button
-            aria-expanded={isActive}
-            size={ButtonSize.Tiny}
-            testId="step-edit-button"
-            variant={ButtonVariant.Secondary}
-          >
-            <TranslatedString id="common.edit_action" />
-          </Button>
-        </div>
-      )}
+      {/* {isEditable && !isActive && ( */}
+      <div className="stepHeader-actions stepHeader-column">
+        <Button
+          aria-expanded={isActive}
+          size={ButtonSize.Tiny}
+          testId="step-edit-button"
+          variant={ButtonVariant.Secondary}
+        >
+          <TranslatedString id="common.edit_action" />
+        </Button>
+      </div>
+      {/* )} */}
     </div>
   );
 };
