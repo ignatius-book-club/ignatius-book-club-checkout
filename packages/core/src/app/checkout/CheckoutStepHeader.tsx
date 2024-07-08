@@ -1,8 +1,6 @@
 import classNames from 'classnames';
-import { noop } from 'lodash';
 import React, { FunctionComponent, memo, ReactNode } from 'react';
 
-import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 
 import { Button, ButtonSize, ButtonVariant } from '../ui/button';
@@ -24,7 +22,6 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
   heading,
   isActive,
   isComplete,
-  isEditable,
   onEdit,
   summary,
   type,
