@@ -188,6 +188,13 @@ class Checkout extends Component<
         }),
         extensionService.loadExtensions(),
       ]);
+      (window as any).checkoutData = data;
+      console.log('checkoutid:::::: ', checkoutId);
+      console.log('data.getCustomer:::::: ', data.getCustomer());
+      console.log('data.getCheckout:::::: ', data.getCheckout());
+      console.log('data.getPaymentMethods:::::: ', data.getPaymentMethods());
+      console.log('data.getBillingAddress:::::: ', data.getBillingAddress());
+      console.log('data.getShippingAddress:::::: ', data.getShippingAddress());
 
       const providers = data.getConfig()?.checkoutSettings?.remoteCheckoutProviders || [];
       const supportedProviders = getSupportedMethodIds(providers);
@@ -204,9 +211,12 @@ class Checkout extends Component<
 
       const { links: { siteLink = '' } = {} } = data.getConfig() || {};
       const errorFlashMessages = data.getFlashMessages('error') || [];
+      console.log('errorFlashMessages:::::: ', errorFlashMessages);
 
       if (errorFlashMessages.length) {
         const { language } = this.props;
+
+        debugger;
 
         this.setState({
           error: new CustomError({
@@ -377,16 +387,23 @@ class Checkout extends Component<
     switch (step.type) {
       case CheckoutStepType.Customer:
         return (
-          <CustomerStep email={this.state.customer?.email || this.state.billingAddress?.email} />
+          <CustomerStep
+            key="checkout-step"
+            email={this.state.customer?.email || this.state.billingAddress?.email}
+          />
         );
 
       case CheckoutStepType.Shipping:
         return (
-          <ShippingStep address={this.state.shippingAddress!} checkout={this.state.checkout} />
+          <ShippingStep
+            key="shipping-step"
+            address={this.state.shippingAddress!}
+            checkout={this.state.checkout}
+          />
         );
 
       case CheckoutStepType.Billing:
-        return <BillingStep address={this.state.billingAddress!} />;
+        return <BillingStep key="billing-step" address={this.state.billingAddress!} />;
 
       case CheckoutStepType.Payment:
         return this.renderPaymentStep(step);
