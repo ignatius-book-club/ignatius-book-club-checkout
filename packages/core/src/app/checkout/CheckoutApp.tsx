@@ -8,7 +8,7 @@ import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
 import { ErrorBoundary, ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
 import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
-
+import { CookiesProvider, useCookies } from 'react-cookie';
 import '../../scss/App.scss';
 
 import { createErrorLogger } from '../common/error';
@@ -26,9 +26,27 @@ export interface CheckoutAppProps {
     publicPath?: string;
     sentryConfig?: BrowserOptions;
     sentrySampleRate?: number;
+    useNewCheckout?: boolean;
 }
 
-export default class CheckoutApp extends Component<CheckoutAppProps> {
+export default (props: CheckoutAppProps) => {
+    return (
+      <CookiesProvider defaultSetOptions={{ path: '/' }}>
+        <CheckoutAppWithCookies {...props} />
+      </CookiesProvider>
+    );
+
+}
+
+const CheckoutAppWithCookies = (props: CheckoutAppProps) => {
+  const [cookies] = useCookies(['ibc_newCheckoutId']);
+
+  return (
+    <CheckoutApp {...props} useNewCheckout={cookies?.ibc_newCheckoutId === props.checkoutId} />
+  );
+}
+
+class CheckoutApp extends Component<CheckoutAppProps> {
     private checkoutService = createCheckoutService({
         locale: getLanguageService().getLocale(),
         shouldWarnMutation: process.env.NODE_ENV === 'development',
@@ -48,12 +66,6 @@ export default class CheckoutApp extends Component<CheckoutAppProps> {
                 sampleRate: props.sentrySampleRate ? props.sentrySampleRate : 0.1,
             },
         );
-
-
-        const newCheckoutIdFromStorage = localStorage.getItem('ibc_newCheckoutId');
-        this.state = {
-            newCheckout: newCheckoutIdFromStorage === props.checkoutId,
-        }
     }
 
     componentDidMount(): void {
@@ -69,7 +81,7 @@ export default class CheckoutApp extends Component<CheckoutAppProps> {
               <CheckoutProvider checkoutService={this.checkoutService}>
                 <AnalyticsProvider checkoutService={this.checkoutService}>
                   <ExtensionProvider checkoutService={this.checkoutService}>
-                    {(this.state as any).newCheckout ? (
+                    {this.props.useNewCheckout ? (
                       <CheckoutNew
                         {...this.props}
                         createEmbeddedMessenger={createEmbeddedCheckoutMessenger}
