@@ -62,19 +62,20 @@ const CustomerInfo: FunctionComponent<CustomerInfoProps & WithCheckoutCustomerIn
         {email}
       </div>
 
-      <div className="customerView-actions">
+      {/* <div className="customerView-actions">
         {isSignedIn && (
           <Button
             isLoading={isSigningOut}
             onClick={handleSignOut}
             size={ButtonSize.Tiny}
             testId="sign-out-link"
+            className='text-ibc-dark-blue bg-transparent'
             variant={ButtonVariant.Secondary}
           >
             <TranslatedString id="customer.sign_out_action" />
           </Button>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

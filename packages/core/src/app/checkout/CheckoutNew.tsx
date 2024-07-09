@@ -292,7 +292,7 @@ class Checkout extends Component<
 
     return (
       <div
-        className={classNames('font-brother-1816', {
+        className={classNames('font-brother-1816 checkout-new', {
           'is-embedded': isEmbedded(),
           'remove-checkout-step-numbers': isHidingStepNumbers,
         })}
