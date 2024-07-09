@@ -1,10 +1,8 @@
-import classNames from 'classnames';
 import React, { FunctionComponent, memo, ReactNode } from 'react';
 
 import { TranslatedString } from '@bigcommerce/checkout/locale';
 
 import { Button, ButtonSize, ButtonVariant } from '../ui/button';
-import { IconCheck } from '../ui/icon';
 
 import CheckoutStepType from './CheckoutStepType';
 
@@ -32,9 +30,9 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
       //   'is-readonly': !isEditable,
       //   'is-clickable': isEditable && !isActive,
       // })}
-      className='stepHeader is-clickable'
+      className="stepHeader is-clickable"
       onClick={() => {
-        onEdit?.(type)
+        onEdit?.(type);
       }}
       // onClick={preventDefault(isEditable && onEdit ? () => onEdit(type) : noop)}
     >
@@ -62,7 +60,7 @@ const CheckoutStepHeader: FunctionComponent<CheckoutStepHeaderProps> = ({
           size={ButtonSize.Tiny}
           testId="step-edit-button"
           variant={ButtonVariant.Secondary}
-          className='text-ibc-blue bg-transparent'
+          className="text-ibc-blue bg-transparent"
         >
           <TranslatedString id="common.edit_action" />
         </Button>
