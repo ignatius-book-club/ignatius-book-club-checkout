@@ -49,10 +49,10 @@ export default class CheckoutApp extends Component<CheckoutAppProps> {
             },
         );
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const newCheckoutParam = urlParams.get('newCheckout');
+
+        const newCheckoutIdFromStorage = localStorage.getItem('ibc_newCheckoutId');
         this.state = {
-            newCheckout: newCheckoutParam === 'true',
+            newCheckout: newCheckoutIdFromStorage === props.checkoutId,
         }
     }
 
