@@ -66,7 +66,7 @@ const CartSummary = lazy(() =>
         () =>
             import(
                 /* webpackChunkName: "cart-summary" */
-                '../cart/CartSummaryNew'
+                '../cart/CartSummary'
             ),
     ),
 );
