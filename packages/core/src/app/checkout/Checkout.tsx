@@ -25,7 +25,7 @@ import { withAnalytics } from '../analytics';
 import { StaticBillingAddress } from '../billing';
 import { EmptyCartMessage } from '../cart';
 import { withCheckout } from '../checkout';
-import { CustomError, ErrorModal, isCustomError } from '../common/error';
+import { ErrorModal, isCustomError } from '../common/error';
 import { retry } from '../common/utility';
 import {
     CheckoutButtonContainer,
@@ -218,22 +218,22 @@ class Checkout extends Component<
             extensionService.preloadExtensions();
 
             const { links: { siteLink = '' } = {} } = data.getConfig() || {};
-            const errorFlashMessages = data.getFlashMessages('error') || [];
+            // const errorFlashMessages = data.getFlashMessages('error') || [];
 
-            if (errorFlashMessages.length) {
-                const { language } = this.props;
+            // if (errorFlashMessages.length) {
+            //     const { language } = this.props;
 
-                this.setState({
-                    error: new CustomError({
-                        title:
-                            errorFlashMessages[0].title ||
-                            language.translate('common.error_heading'),
-                        message: errorFlashMessages[0].message,
-                        data: {},
-                        name: 'default',
-                    }),
-                });
-            }
+            //     this.setState({
+            //         error: new CustomError({
+            //             title:
+            //                 errorFlashMessages[0].title ||
+            //                 language.translate('common.error_heading'),
+            //             message: errorFlashMessages[0].message,
+            //             data: {},
+            //             name: 'default',
+            //         }),
+            //     });
+            // }
 
             const messenger = createEmbeddedMessenger({ parentOrigin: siteLink });
 
