@@ -288,22 +288,22 @@ class Checkout extends Component<
     }
 
     render(): ReactNode {
-        const { error, isHidingStepNumbers } = this.state;
+        const { isHidingStepNumbers } = this.state;
         let errorModal = null;
 
-        if (error) {
-            if (isCustomError(error)) {
-                errorModal = (
-                    <ErrorModal
-                        error={error}
-                        onClose={this.handleCloseErrorModal}
-                        title={error.title}
-                    />
-                );
-            } else {
-                errorModal = <ErrorModal error={error} onClose={this.handleCloseErrorModal} />;
-            }
-        }
+        // if (error) {
+        //     if (isCustomError(error)) {
+        //         errorModal = (
+        //             <ErrorModal
+        //                 error={error}
+        //                 onClose={this.handleCloseErrorModal}
+        //                 title={error.title}
+        //             />
+        //         );
+        //     } else {
+        //         errorModal = <ErrorModal error={error} onClose={this.handleCloseErrorModal} />;
+        //     }
+        // }
 
         return (
             <div className={classNames({ 'is-embedded': isEmbedded(), 'remove-checkout-step-numbers': isHidingStepNumbers })} data-test="checkout-page-container" id="checkout-page-container">
