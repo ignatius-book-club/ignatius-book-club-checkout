@@ -1,15 +1,11 @@
 import { CheckoutSelectors, CustomerRequestOptions, CustomError } from '@bigcommerce/checkout-sdk';
-import { noop } from 'lodash';
 import React, { FunctionComponent } from 'react';
 
-import { TranslatedString } from '@bigcommerce/checkout/locale';
 import { CheckoutContextProps } from '@bigcommerce/checkout/payment-integration-api';
 
 import { withCheckout } from '../checkout';
-import { isErrorWithType } from '../common/error';
-import { Button, ButtonSize, ButtonVariant } from '../ui/button';
 
-import canSignOut, { isSupportedSignoutMethod } from './canSignOut';
+import canSignOut from './canSignOut';
 
 export interface CustomerInfoProps {
   onSignOut?(event: CustomerSignOutEvent): void;
@@ -30,31 +26,31 @@ interface WithCheckoutCustomerInfoProps {
 
 const CustomerInfo: FunctionComponent<CustomerInfoProps & WithCheckoutCustomerInfoProps> = ({
   email,
-  methodId,
-  isSignedIn,
-  isSigningOut,
-  onSignOut = noop,
-  onSignOutError = noop,
-  signOut,
+  // methodId,
+  // isSignedIn,
+  // isSigningOut,
+  // onSignOut = noop,
+  // onSignOutError = noop,
+  // signOut,
 }) => {
-  const handleSignOut: () => Promise<void> = async () => {
-    try {
-      if (isSupportedSignoutMethod(methodId)) {
-        await signOut({ methodId });
-        onSignOut({ isCartEmpty: false });
-        window.location.reload();
-      } else {
-        await signOut();
-        onSignOut({ isCartEmpty: false });
-      }
-    } catch (error) {
-      if (isErrorWithType(error) && error.type === 'checkout_not_available') {
-        onSignOut({ isCartEmpty: true });
-      } else {
-        onSignOutError(error);
-      }
-    }
-  };
+  // const handleSignOut: () => Promise<void> = async () => {
+  //   try {
+  //     if (isSupportedSignoutMethod(methodId)) {
+  //       await signOut({ methodId });
+  //       onSignOut({ isCartEmpty: false });
+  //       window.location.reload();
+  //     } else {
+  //       await signOut();
+  //       onSignOut({ isCartEmpty: false });
+  //     }
+  //   } catch (error) {
+  //     if (isErrorWithType(error) && error.type === 'checkout_not_available') {
+  //       onSignOut({ isCartEmpty: true });
+  //     } else {
+  //       onSignOutError(error);
+  //     }
+  //   }
+  // };
 
   return (
     <div className="customerView" data-test="checkout-customer-info">
