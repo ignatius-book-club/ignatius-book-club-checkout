@@ -25,7 +25,7 @@ import { withAnalytics } from '../analytics';
 import { StaticBillingAddress } from '../billing';
 import { EmptyCartMessage } from '../cart';
 import { withCheckout } from '../checkout';
-import { ErrorModal, isCustomError } from '../common/error';
+// import { ErrorModal, isCustomError } from '../common/error';
 import { retry } from '../common/utility';
 import {
     CheckoutButtonContainer,
