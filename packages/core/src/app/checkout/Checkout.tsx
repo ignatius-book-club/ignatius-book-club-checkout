@@ -658,9 +658,9 @@ class Checkout extends Component<
         this.setState({ hasSelectedShippingOptions: newHasSelectedShippingOptions });
     };
 
-    private handleCloseErrorModal: () => void = () => {
-        this.setState({ error: undefined });
-    };
+    // private handleCloseErrorModal: () => void = () => {
+    //     this.setState({ error: undefined });
+    // };
 
     private handleExpanded: (type: CheckoutStepType) => void = (type) => {
         const { analyticsTracker } = this.props;
