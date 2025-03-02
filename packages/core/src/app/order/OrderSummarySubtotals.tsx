@@ -65,11 +65,14 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
   subtotalAmount,
   //   handlingAmount,
   //   storeCreditAmount,
-  //   coupons,
+  coupons,
   //   onRemovedGiftCertificate,
   //   onRemovedCoupon,
 }) => {
   const taxTotal = taxes?.reduce((acc, tax) => acc + tax.amount, 0);
+
+  const hasFreeShippingCoupon = coupons?.find((coupon) => coupon.couponType === 'free_shipping');
+
   return (
     <>
       <div className="border-light-border text-ibc-blue flex flex-col gap-2 border-b pb-4">
@@ -82,7 +85,7 @@ const OrderSummarySubtotals: FunctionComponent<OrderSummarySubtotalsProps> = ({
         <div className="flex items-center justify-between">
           <span>Shipping</span>
           <span>
-            <PriceDisplay amount={shippingAmount!} showZero={false} />
+            <PriceDisplay amount={hasFreeShippingCoupon ? 0 : shippingAmount!} showZero={false} />
           </span>
         </div>
         <div className="flex items-center justify-between">
