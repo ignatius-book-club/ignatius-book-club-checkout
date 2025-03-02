@@ -35,7 +35,7 @@ import { getSupportedMethodIds } from '../customer/getSupportedMethods';
 import { EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout';
 import { PromotionBannerList } from '../promotion';
 import { hasSelectedShippingOptions, isUsingMultiShipping } from '../shipping';
-import { ShippingOptionExpiredError } from '../shipping/shippingOption';
+// import { ShippingOptionExpiredError } from '../shipping/shippingOption';
 import { LazyContainer } from '../ui/loading';
 import { BillingStep } from './BillingStep/BillingStep';
 import { CheckoutPageFallback } from './CheckoutPageFallback/CheckoutPageFallback';
@@ -528,7 +528,7 @@ class Checkout extends Component<
       isShippingStepFinished
     ) {
       this.navigateToStep(CheckoutStepType.Shipping);
-      this.setState({ error: new ShippingOptionExpiredError() });
+      // this.setState({ error: new ShippingOptionExpiredError() });
     }
 
     this.setState({ hasSelectedShippingOptions: newHasSelectedShippingOptions });
