@@ -1,7 +1,7 @@
 import { Address } from '@bigcommerce/checkout-sdk';
 import React from 'react';
 import { AddressDisplay } from '../AddressDisplay/AddressDisplay';
-import { ibcUrl } from '../utils/checkout-utils';
+import { IBF_URL } from '../utils/checkout-utils';
 
 type BillingStepProps = {
   address: Address;
@@ -24,7 +24,7 @@ export const BillingStep = ({ address }: BillingStepProps) => {
         />
       </div>
       <a
-        href={`${ibcUrl}/checkout?edit=billing`}
+        href={`${IBF_URL}/checkout?edit=billing`}
         className="text-primary pointer-events-auto absolute text-sm underline max-md:col-span-1 md:col-span-2"
         style={{
           top: '1.5rem',

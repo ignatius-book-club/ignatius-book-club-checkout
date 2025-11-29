@@ -1,8 +1,8 @@
 import { noop } from 'lodash';
-import { ibcUrl } from './utils/checkout-utils';
+import { IBF_URL } from './utils/checkout-utils';
 
 export default function navigateToOrderConfirmation(orderId?: number): Promise<never> {
-  window.location.replace(`${ibcUrl}/order-confirmation/${orderId}`);
+  window.location.replace(`${IBF_URL}/order-confirmation/${orderId}`);
   return new Promise(noop);
 
   // let url: string;
