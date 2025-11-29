@@ -1,7 +1,7 @@
 import { Address, Checkout } from '@bigcommerce/checkout-sdk';
 import React from 'react';
 import { AddressDisplay } from '../AddressDisplay/AddressDisplay';
-import { ibcUrl } from '../utils/checkout-utils';
+import { IBF_URL } from '../utils/checkout-utils';
 import { PriceDisplay } from '../../order/OrderSummarySubtotals';
 
 type ShippingStepProps = {
@@ -33,7 +33,7 @@ export const ShippingStep = ({ address, checkout }: ShippingStepProps) => {
         )}
       </div>
       <a
-        href={`${ibcUrl}/checkout?edit=shipping`}
+        href={`${IBF_URL}/checkout?edit=shipping`}
         role="button"
         className="text-primary pointer-events-auto absolute text-sm underline max-md:col-span-1 md:col-span-2"
         style={{
