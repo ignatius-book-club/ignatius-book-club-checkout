@@ -26,10 +26,15 @@ const StoreCreditField: FunctionComponent<StoreCreditFieldProps & WithCurrencyPr
 }) => {
     const {
         checkoutState: {
+            data: { getCustomer },
             statuses: { isSubmittingOrder }
         }
     } = useCheckout();
 
+    const customer = getCustomer(); // <-- This gives full customer info
+    // Show eWallet option only if the logged-in customer belongs to the "Parent" group.
+    const isEwalletUser = customer && !customer.isGuest && customer?.customerGroup?.name === 'Parent';
+    
     const handleChange = useCallback((event) => onChange(event.target.checked), [onChange]);
     const labelContent = useMemo(
         () => (
@@ -43,7 +48,11 @@ const StoreCreditField: FunctionComponent<StoreCreditFieldProps & WithCurrencyPr
                                 data={{
                                     storeCredit: currency.toCustomerCurrency(availableStoreCredit),
                                 }}
-                                id="redeemable.store_credit_available_text"
+                                id={
+                                    isEwalletUser
+                                        ? 'redeemable.store_credit_available_text_eWallet'
+                                        : 'redeemable.store_credit_available_text'
+                                }
                             />
                         </Tooltip>
                     }
@@ -52,10 +61,16 @@ const StoreCreditField: FunctionComponent<StoreCreditFieldProps & WithCurrencyPr
                         {currency.toCustomerCurrency(usableStoreCredit)}
                     </a>
                 </TooltipTrigger>{' '}
-                <TranslatedString id="redeemable.apply_store_credit_after_action" />
+                <TranslatedString
+                    id={
+                        isEwalletUser
+                            ? 'redeemable.apply_store_credit_after_action_eWallet'
+                            : 'redeemable.apply_store_credit_after_action'
+                    }
+                />
             </>
         ),
-        [availableStoreCredit, currency, usableStoreCredit],
+        [availableStoreCredit, currency, usableStoreCredit, isEwalletUser],
     );
 
     return (
