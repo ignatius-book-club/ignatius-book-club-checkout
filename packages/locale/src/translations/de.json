@@ -477,7 +477,9 @@
             "gift_certificate_text": "Geschenkgutschein",
             "remove_action": "Entfernen",
             "store_credit_available_text": "Ihr Konto verfügt derzeit insgesamt über {storeCredit} Shop-Guthaben",
-            "toggle_action": "Coupon/Geschenkgutschein"
+            "toggle_action": "Coupon/Geschenkgutschein",
+            "apply_store_credit_after_action_eWallet":"eWallet-Betrag zur Bestellung",
+            "store_credit_available_text_eWallet":"Ihr Konto hat derzeit {storeCredit} eWallet-Guthaben verfügbar"
         },
         "remote": {
             "browser_unsupported": "Für die gewählte Zahlungsmethode ist ein anderer Webbrowser erforderlich. Bitte wählen Sie eine andere Zahlungsmethode.",

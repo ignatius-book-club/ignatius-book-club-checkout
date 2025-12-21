@@ -477,7 +477,9 @@
             "gift_certificate_text": "Gavekort",
             "remove_action": "Fjern",
             "store_credit_available_text": "Din konto har i øjeblikket {storeCredit} butikskredit i alt tilgængelig",
-            "toggle_action": "Kupon/gavekort"
+            "toggle_action": "Kupon/gavekort",
+            "apply_store_credit_after_action_eWallet": "eWallet-beløb til ordre",
+            "store_credit_available_text_eWallet": "Din konto har i øjeblikket {storeCredit} i eWallet tilgængelig"
         },
         "remote": {
             "browser_unsupported": "Den valgte betalingsmetode kræver en anden webbrowser. Vælg en anden betalingsmetode.",

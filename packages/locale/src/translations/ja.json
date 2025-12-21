@@ -477,7 +477,9 @@
             "gift_certificate_text": "商品券",
             "remove_action": "除去",
             "store_credit_available_text": "現在、アカウントには合計 {storeCredit} のストアクレジットが利用可能です",
-            "toggle_action": "クーポン/ギフトコード"
+            "toggle_action": "クーポン/ギフトコード",
+            "apply_store_credit_after_action_eWallet": "eWalletを注文に使用",
+            "store_credit_available_text_eWallet": "あなたのアカウントには現在{storeCredit}のeWallet残高があります"
         },
         "remote": {
             "browser_unsupported": "選択した支払方い法には、別のWebブラウザが必要です。他の支払方法を選んでください。",
