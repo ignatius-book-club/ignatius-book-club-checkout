@@ -3,10 +3,12 @@ import React, { FunctionComponent, useCallback, useMemo } from 'react';
 
 import { preventDefault } from '@bigcommerce/checkout/dom-utils';
 import { TranslatedString, withCurrency, WithCurrencyProps } from '@bigcommerce/checkout/locale';
-import { useCheckout } from '@bigcommerce/checkout/payment-integration-api';
+import { useCheckout, useParentContext } from '@bigcommerce/checkout/payment-integration-api';
 
 import { CheckboxInput } from '../../ui/form';
 import { Tooltip, TooltipTrigger } from '../../ui/tooltip';
+
+
 
 export interface StoreCreditFieldProps {
     availableStoreCredit: number;
@@ -26,15 +28,24 @@ const StoreCreditField: FunctionComponent<StoreCreditFieldProps & WithCurrencyPr
 }) => {
     const {
         checkoutState: {
-            data: { getCustomer },
             statuses: { isSubmittingOrder }
         }
     } = useCheckout();
 
-    const customer = getCustomer(); // <-- This gives full customer info
-    // Show eWallet option only if the logged-in customer belongs to the "Parent" group.
-    const isEwalletUser = customer && !customer.isGuest && customer?.customerGroup?.name === 'Parent';
-    
+    /**
+     * `isParent` is derived from a cookie in the checkout bootstrap layer
+     * and passed into the embedded checkout runtime via `postMessage`.
+     *
+     * We intentionally do NOT rely on:
+     * - BigCommerce customer groups
+     * - Backend lookups
+     * - Checkout SDK internals
+     *
+     * This keeps the logic UI-scoped, predictable, and version-safe.
+     */
+    const { isParent } = useParentContext();
+    console.log("🚀 ~ StoreCreditField ~ isParent:", isParent)
+
     const handleChange = useCallback((event) => onChange(event.target.checked), [onChange]);
     const labelContent = useMemo(
         () => (
@@ -49,7 +60,7 @@ const StoreCreditField: FunctionComponent<StoreCreditFieldProps & WithCurrencyPr
                                     storeCredit: currency.toCustomerCurrency(availableStoreCredit),
                                 }}
                                 id={
-                                    isEwalletUser
+                                    isParent
                                         ? 'redeemable.store_credit_available_text_eWallet'
                                         : 'redeemable.store_credit_available_text'
                                 }
@@ -63,14 +74,14 @@ const StoreCreditField: FunctionComponent<StoreCreditFieldProps & WithCurrencyPr
                 </TooltipTrigger>{' '}
                 <TranslatedString
                     id={
-                        isEwalletUser
+                        isParent
                             ? 'redeemable.apply_store_credit_after_action_eWallet'
                             : 'redeemable.apply_store_credit_after_action'
                     }
                 />
             </>
         ),
-        [availableStoreCredit, currency, usableStoreCredit, isEwalletUser],
+        [availableStoreCredit, currency, usableStoreCredit, isParent],
     );
 
     return (
