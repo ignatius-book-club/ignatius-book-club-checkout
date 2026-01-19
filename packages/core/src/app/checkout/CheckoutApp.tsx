@@ -54,8 +54,6 @@ const CheckoutAppWithCookies = (props: CheckoutAppProps) => {
    * This value is derived from a cookie set by the parent application.
    */
   
-  const isParent = cookies?.ibc_isParent === 'true';
-
   useEffect(() => {
     /**
      * Guard for SSR safety.
@@ -85,11 +83,11 @@ const CheckoutAppWithCookies = (props: CheckoutAppProps) => {
     window.postMessage(
       {
         type: 'IBC_IS_PARENT',
-        payload: { isParent },
+        payload: { isParent: cookies?.ibc_isParent },
       },
       window.location.origin
     );
-  }, [isParent]);
+  }, [cookies?.ibc_isParent]);
 
   /**
    * `useNewCheckout` is derived from a checkout-scoped cookie
