@@ -1,13 +1,13 @@
 import { createCheckoutService, createEmbeddedCheckoutMessenger } from '@bigcommerce/checkout-sdk';
 import { BrowserOptions } from '@sentry/browser';
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import ReactModal from 'react-modal';
 
 import { AnalyticsProvider } from '@bigcommerce/checkout/analytics';
 import { ExtensionProvider } from '@bigcommerce/checkout/checkout-extension';
 import { ErrorBoundary, ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { getLanguageService, LocaleProvider } from '@bigcommerce/checkout/locale';
-import { CheckoutProvider } from '@bigcommerce/checkout/payment-integration-api';
+import { CheckoutProvider, ParentProvider } from '@bigcommerce/checkout/payment-integration-api';
 import { CookiesProvider, useCookies } from 'react-cookie';
 import '../../scss/App.scss';
 
@@ -19,6 +19,7 @@ import {
 
 import Checkout from './Checkout';
 import CheckoutNew from './CheckoutNew';
+
 
 export interface CheckoutAppProps {
     checkoutId: string;
@@ -39,12 +40,68 @@ export default (props: CheckoutAppProps) => {
 }
 
 const CheckoutAppWithCookies = (props: CheckoutAppProps) => {
-  const [cookies] = useCookies(['ibc_newCheckoutId']);
+  /**
+   * Cookies are ONLY accessible at the checkout bootstrap layer.
+   * They are NOT accessible inside the embedded checkout runtime
+   * due to iframe sandboxing / PCI restrictions.
+   */
+  const [cookies] = useCookies(['ibc_newCheckoutId', 'ibc_isParent']);
+  
+  console.log("🚀 ~ CheckoutAppWithCookies ~ cookies:", cookies?.ibc_newCheckoutId, cookies?.ibc_isParent)
 
+  /**
+   * Determines whether the current checkout flow is a Parent (eWallet) flow.
+   * This value is derived from a cookie set by the parent application.
+   */
+  
+  const isParent = cookies?.ibc_isParent === 'true';
+
+  useEffect(() => {
+    /**
+     * Guard for SSR safety.
+     * This component may be rendered during server-side rendering,
+     * but `postMessage` must only run in the browser.
+     */
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    /**
+     * Cross-frame communication:
+     *
+     * We intentionally use browser-native `window.postMessage` instead of
+     * `createEmbeddedCheckoutMessenger` from `@bigcommerce/checkout-sdk`.
+     *
+     * Reason:
+     * - The SDK messenger API is not stable or documented in v1.621.x
+     * - It is designed for BigCommerce-controlled storefronts
+     * - Our checkout is embedded in a custom Next.js application
+     *
+     * This message is consumed by `ParentProvider` inside the
+     * embedded checkout runtime and exposed via React Context.
+     *
+     * Message payload is intentionally minimal and non-sensitive.
+     */
+    window.postMessage(
+      {
+        type: 'IBC_IS_PARENT',
+        payload: { isParent },
+      },
+      window.location.origin
+    );
+  }, [isParent]);
+
+  /**
+   * `useNewCheckout` is derived from a checkout-scoped cookie
+   * and determines which checkout implementation to render.
+   */
   return (
-    <CheckoutApp {...props} useNewCheckout={cookies?.ibc_newCheckoutId === props.checkoutId} />
+    <CheckoutApp
+      {...props}
+      useNewCheckout={cookies?.ibc_newCheckoutId === props.checkoutId}
+    />
   );
-}
+};
 
 class CheckoutApp extends Component<CheckoutAppProps> {
     private checkoutService = createCheckoutService({
@@ -81,6 +138,7 @@ class CheckoutApp extends Component<CheckoutAppProps> {
               <CheckoutProvider checkoutService={this.checkoutService}>
                 <AnalyticsProvider checkoutService={this.checkoutService}>
                   <ExtensionProvider checkoutService={this.checkoutService}>
+                    <ParentProvider>
                     {this.props.useNewCheckout ? (
                       <CheckoutNew
                         {...this.props}
@@ -98,6 +156,7 @@ class CheckoutApp extends Component<CheckoutAppProps> {
                         errorLogger={this.errorLogger}
                       />
                     )}
+                    </ParentProvider>
                   </ExtensionProvider>
                 </AnalyticsProvider>
               </CheckoutProvider>
