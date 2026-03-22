@@ -1,6 +1,10 @@
-# Checkout JS
+# Ignatius Book Club Checkout
+
+This is a fork of [Checkout JS](https://github.com/bigcommerce/checkout-js). 
 
 Checkout JS is a browser-based application providing a seamless UI for BigCommerce shoppers to complete their checkout. It is also known as [Optimized One-Page Checkout](https://support.bigcommerce.com/s/article/Optimized-Single-Page-Checkout), which is currently the recommended checkout option for all BigCommerce stores.
+
+This application runs on [Vercel](https://vercel.com/ignatius-book-club/ignatius-book-club-checkout). It is loaded on a bigcommerce hosted page by entering the `auto-loader` url in checkout settings. Bigcommerce will load this custom checkout page when users go to checkout.
 
 ## Requirements
 
@@ -34,12 +38,6 @@ If you are developing the application locally and want to build the source code 
 npm run dev
 ```
 
-If you want to create a prerelease (i.e.: `alpha`) for testing in the integration environment, you can run the following command:
-
-```sh
-npm run release:alpha
-```
-
 After that, you need to push the prerelease tag to your fork so it can be referenced remotely.
 
 ## Custom Checkout installation
@@ -53,16 +51,17 @@ npm run dev:server
 
 And enter the local URL for `auto-loader-dev.js` in Checkout Settings, e.g `http://127.0.0.1:8080/auto-loader-dev.js`
 
+## Staging environment
+
+To test changes in the staging environment, merge your changes to the staging branch and wait for the build to complete successfully in vercel.
+
+In order to load the correct version, you'll need to update the loader url in checkout settings to `https://staging.checkout.ignatiusbookfairs.com/auto-loader.js`
+
+Once ready, you can go through a checkout flow at the staging domain, `https://staging.store.ignatiusbookfairs.com`.
+
+Remember, if you go back to making local changes and want to preview them, you'll need to change the loader settings back to the local url.
+
 ## Release
 
-Everytime a PR is merged to the master branch, CircleCI will trigger a build automatically. However, it won't create a new Git release until it is approved by a person with write access to the repository. If you have write access, you can approve a release job by going to [CircleCI](https://circleci.com/gh/bigcommerce/workflows/checkout-js/tree/master) and look for the job you wish to approve. You can also navigate directly to the release job by clicking on the yellow dot next to the merged commit.
+Once changes are ready to go live, merged them into the master branch. This will trigger another build in vercel that will be deployed to the production site.
 
-
-## Contribution
-
-We currently do not accept Pull Requests from external parties. However, if you are an external party and want to report a bug or provide your feedback, you are more than welcome to raise a GitHub Issue. We will attend to these issues as quickly as we can.
-
-More information can be found in the [contribution guide](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md) for this project.
-
-
-Copyright (C) 2019-Present BigCommerce Inc. All rights reserved.
