@@ -14,7 +14,7 @@ import { ObjectSchema } from 'yup';
 import { AnalyticsContextProps } from '@bigcommerce/checkout/analytics';
 import { ErrorLogger } from '@bigcommerce/checkout/error-handling-utils';
 import { withLanguage, WithLanguageProps } from '@bigcommerce/checkout/locale';
-import { CheckoutContextProps, PaymentFormValues } from '@bigcommerce/checkout/payment-integration-api';
+import { CheckoutContextProps, PaymentFormValues, useParentContext } from '@bigcommerce/checkout/payment-integration-api';
 import { ChecklistSkeleton } from '@bigcommerce/checkout/ui';
 
 import { withAnalytics } from '../analytics';
@@ -57,7 +57,9 @@ interface WithCheckoutPaymentProps {
     cartUrl: string;
     defaultMethod?: PaymentMethod;
     finalizeOrderError?: Error;
+    hasEwalletItem: boolean;
     isInitializingPayment: boolean;
+    isParent: boolean;
     isSubmittingOrder: boolean;
     isStoreCreditApplied: boolean;
     isTermsConditionsRequired: boolean;
@@ -123,7 +125,9 @@ class Payment extends Component<
         } = this.props;
 
 
-        if (usableStoreCredit) {
+        const { hasEwalletItem, isParent } = this.props;
+
+        if (usableStoreCredit && !(isParent && hasEwalletItem)) {
             this.handleStoreCreditChange(true);
         }
 
@@ -583,9 +587,10 @@ class Payment extends Component<
 export function mapToPaymentProps({
         checkoutService,
         checkoutState,
-}: CheckoutContextProps): WithCheckoutPaymentProps | null {
+}: CheckoutContextProps): Omit<WithCheckoutPaymentProps, 'isParent'> | null {
     const {
         data: {
+            getCart,
             getCheckout,
             getConfig,
             getCustomer,
@@ -605,6 +610,7 @@ export function mapToPaymentProps({
     const customer = getCustomer();
     const consignments = getConsignments();
     const paymentProviderCustomer = getPaymentProviderCustomer();
+    const cart = getCart();
 
     const { isComplete = false } = getOrder() || {};
     let methods = getPaymentMethods() || EMPTY_ARRAY;
@@ -636,6 +642,11 @@ export function mapToPaymentProps({
     });
 
     const { isStoreCreditApplied } = checkout;
+
+    const hasEwalletItem = !!cart?.lineItems && [
+        ...(cart.lineItems.physicalItems || []),
+        ...(cart.lineItems.digitalItems || []),
+    ].some((item) => typeof item.sku === 'string' && item.sku.startsWith('EW'));
 
     let selectedPaymentMethod;
     let filteredMethods;
@@ -682,6 +693,7 @@ export function mapToPaymentProps({
         defaultMethod: selectedPaymentMethod || filteredMethods[0],
         finalizeOrderError: getFinalizeOrderError(),
         finalizeOrderIfNeeded: checkoutService.finalizeOrderIfNeeded,
+        hasEwalletItem,
         loadCheckout: checkoutService.loadCheckout,
         isInitializingPayment: isInitializingPayment(),
         isPaymentDataRequired,
@@ -709,4 +721,12 @@ export function mapToPaymentProps({
     };
 }
 
-export default withAnalytics(withLanguage(withCheckout(mapToPaymentProps)(Payment)));
+const PaymentWithCheckout = withAnalytics(withLanguage(withCheckout(mapToPaymentProps)(Payment)));
+
+const PaymentWithParentContext: React.FC<PaymentProps> = (props) => {
+    const { isParent } = useParentContext();
+
+    return <PaymentWithCheckout {...props} isParent={isParent} />;
+};
+
+export default PaymentWithParentContext;
