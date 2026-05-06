@@ -477,7 +477,9 @@
             "gift_certificate_text": "Cupón de regalo",
             "remove_action": "Eliminar",
             "store_credit_available_text": "Tu cuenta tiene actualmente disponible un total de {storeCredit} de crédito en tienda",
-            "toggle_action": "Cupón de regalo"
+            "toggle_action": "Cupón de regalo",
+            "apply_store_credit_after_action_eWallet": "Monto de eWallet aplicado al pedido",
+            "store_credit_available_text_eWallet": "Tu cuenta tiene actualmente {storeCredit} de saldo eWallet disponible"
         },
         "remote": {
             "browser_unsupported": "El método de pago seleccionado requiere un navegador web diferente. Elija otro método de pago.",

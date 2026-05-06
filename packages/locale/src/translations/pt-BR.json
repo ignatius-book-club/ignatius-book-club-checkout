@@ -477,7 +477,9 @@
             "gift_certificate_text": "Vale-presente",
             "remove_action": "Remover",
             "store_credit_available_text": "No momento, a sua conta tem um total de {storeCredit} de crédito disponível na loja",
-            "toggle_action": "Cupom/vale-presente"
+            "toggle_action": "Cupom/vale-presente",
+            "apply_store_credit_after_action_eWallet": "Valor do eWallet aplicado ao pedido",
+            "store_credit_available_text_eWallet": "Sua conta tem atualmente {storeCredit} de eWallet disponível"
         },
         "remote": {
             "browser_unsupported": "A forma de pagamento selecionada exige o uso de outro navegador. Selecione outra forma de pagamento.",

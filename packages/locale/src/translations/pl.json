@@ -477,7 +477,9 @@
             "gift_certificate_text": "Bon podarunkowy",
             "remove_action": "Usuń",
             "store_credit_available_text": "Na Twoim koncie jest obecnie dostępny kredyt sklepowy {storeCredit}",
-            "toggle_action": "Kupon/ bon podarunkowy"
+            "toggle_action": "Kupon/ bon podarunkowy",
+            "apply_store_credit_after_action_eWallet": "Kwota eWallet do zamówienia",
+            "store_credit_available_text_eWallet": "Twoje konto ma obecnie {storeCredit} dostępnego salda eWallet"
         },
         "remote": {
             "browser_unsupported": "Wybrana metoda płatności wymaga innej przeglądarki internetowej. Wybierz inną metodę płatności.",

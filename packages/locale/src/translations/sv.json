@@ -477,7 +477,9 @@
             "gift_certificate_text": "Presentkort",
             "remove_action": "Ta bort",
             "store_credit_available_text": "Ditt konto har för närvarande totalt {storeCredit} tillgängliga butikskrediter",
-            "toggle_action": "Kupong/presentkort"
+            "toggle_action": "Kupong/presentkort",
+            "apply_store_credit_after_action_eWallet": "eWallet-belopp för beställning",
+            "store_credit_available_text_eWallet": "Ditt konto har för närvarande {storeCredit} i eWallet tillgängligt"
         },
         "remote": {
             "browser_unsupported": "Den valda betalningsmetoden kräver en annan webbläsare. Välj en annan betalningsmetod.",

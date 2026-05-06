@@ -477,7 +477,9 @@
             "gift_certificate_text": "Chèque-cadeau",
             "remove_action": "Supprimer",
             "store_credit_available_text": "Un avoir de {storeCredit} est actuellement disponible sur votre compte",
-            "toggle_action": "Code promotionnel/chèque-cadeau"
+            "toggle_action": "Code promotionnel/chèque-cadeau",
+            "apply_store_credit_after_action_eWallet": "Montant eWallet appliqué à la commande",
+            "store_credit_available_text_eWallet": "Votre compte dispose actuellement de {storeCredit} montant eWallet disponible"
         },
         "remote": {
             "browser_unsupported": "Vous devez utiliser un autre navigateur Web pour le mode de paiement sélectionné. Veuillez choisir un autre mode de paiement.",

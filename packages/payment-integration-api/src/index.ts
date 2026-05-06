@@ -24,6 +24,8 @@ export {
     PaymentFormContext,
     PaymentFormProvider,
     usePaymentFormContext,
+    ParentProvider,
+    useParentContext
 } from './contexts';
 export {
     CHECKOUT_ROOT_NODE_ID,

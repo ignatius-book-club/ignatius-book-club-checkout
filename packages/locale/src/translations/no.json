@@ -477,7 +477,9 @@
             "gift_certificate_text": "Gavekort",
             "remove_action": "Fjern",
             "store_credit_available_text": "Kontoen din har for øyeblikket totalt {storeCredit} butikkkreditt tilgjengelig",
-            "toggle_action": "Kupong/gavekort"
+            "toggle_action": "Kupong/gavekort",
+            "apply_store_credit_after_action_eWallet": "eWallet-beløp til ordre",
+            "store_credit_available_text_eWallet": "Kontoen din har for øyeblikket {storeCredit} eWallet tilgjengelig"
         },
         "remote": {
             "browser_unsupported": "Den valgte betalingsmåten krever en annen nettleser. Velg en annen betalingsmåte.",

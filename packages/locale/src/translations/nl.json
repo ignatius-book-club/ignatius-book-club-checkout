@@ -477,7 +477,9 @@
             "gift_certificate_text": "Cadeaubon",
             "remove_action": "Verwijderen",
             "store_credit_available_text": "Je account beschikt momenteel over een totaal winkeltegoed van {storeCredit}",
-            "toggle_action": "Coupon/cadeaubon"
+            "toggle_action": "Coupon/cadeaubon",
+            "apply_store_credit_after_action_eWallet": "eWallet-bedrag voor bestelling",
+            "store_credit_available_text_eWallet": "Uw account heeft momenteel {storeCredit} eWallet beschikbaar"
         },
         "remote": {
             "browser_unsupported": "Voor de geselecteerde betaalmethode is een andere webbrowser vereist. Kies een andere betaalmethode.",
