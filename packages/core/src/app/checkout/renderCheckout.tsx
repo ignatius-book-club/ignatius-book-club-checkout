@@ -19,15 +19,24 @@ export default function renderCheckout({
     // silently dropped by the browser. Mirror them into cookies here — before
     // CheckoutApp is required and the React tree mounts — so existing readers
     // (useCookies in CheckoutApp.tsx) pick them up unchanged. URL params are
-    // left in place so a re-init can read them again.
+    // left in place so a re-init can read them again. No `domain=` attribute:
+    // host-scoped is enough since the reader is on the same page, and it keeps
+    // the write working on staging / dev hosts too.
     if (typeof window !== 'undefined') {
         const params = new URLSearchParams(window.location.search);
+
+        // eslint-disable-next-line no-console
+        console.log('🚀 ~ renderCheckout ~ ibc params:', {
+            ibc_newCheckoutId: params.get('ibc_newCheckoutId'),
+            ibc_isParent: params.get('ibc_isParent'),
+            search: window.location.search,
+        });
 
         (['ibc_newCheckoutId', 'ibc_isParent'] as const).forEach((name) => {
             const value = params.get(name);
 
             if (value !== null) {
-                document.cookie = `${name}=${encodeURIComponent(value)}; path=/; domain=.ignatiusbookfairs.com; SameSite=Lax`;
+                document.cookie = `${name}=${encodeURIComponent(value)}; path=/; SameSite=Lax`;
             }
         });
     }
